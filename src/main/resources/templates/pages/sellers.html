@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nos Vendeurs - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <section class="section">
+        <div class="container">
+            <h1 style="font-size:1.75rem;margin-bottom:.5rem;">Nos Vendeurs</h1>
+            <p style="color:#64748b;margin-bottom:2rem;">Decouvrez nos vendeurs verifies et leurs produits de qualite</p>
+
+            <form class="filter-bar" method="get" action="/sellers">
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="rating" th:selected="${selectedSort == 'rating'}">Mieux notes</option>
+                    <option value="sales" th:selected="${selectedSort == 'sales'}">Plus de ventes</option>
+                    <option value="name" th:selected="${selectedSort == 'name'}">Nom (A-Z)</option>
+                </select>
+                <label>
+                    <input type="checkbox" name="premiumOnly" value="true" th:checked="${premiumOnly}" onchange="this.form.submit()"/>
+                    Vendeurs Premium uniquement
+                </label>
+                <span class="count" th:text="${#lists.size(sellers)} + ' vendeur(s)'">0 vendeur(s)</span>
+            </form>
+
+            <div class="grid grid-3">
+                <div th:each="seller : ${sellers}" th:replace="~{fragments/layout :: sellerCard(${seller})}"></div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

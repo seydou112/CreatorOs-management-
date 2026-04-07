@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Tarifs - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <section class="section">
+        <div class="container text-center">
+            <h1 style="font-size:2rem;margin-bottom:.5rem;">Choisissez votre formule</h1>
+            <p style="color:#64748b;max-width:600px;margin:0 auto 3rem;">Selectionnez le plan qui correspond a vos besoins. Plus votre plan est eleve, plus votre visibilite et vos avantages sont importants.</p>
+
+            <div class="pricing-grid">
+                <!-- NONE -->
+                <div class="pricing-card">
+                    <h3>Sans abonnement</h3>
+                    <div class="pricing-price">Gratuit</div>
+                    <div class="pricing-commission">10% de commission par vente</div>
+                    <ul class="pricing-features">
+                        <li>Publication de produits</li>
+                        <li>Page vendeur basique</li>
+                        <li>Support par email</li>
+                        <li>Visibilite standard</li>
+                    </ul>
+                    <a href="/auth/register" class="btn btn-outline-dark" style="width:100%;">Commencer gratuitement</a>
+                </div>
+
+                <!-- STARTER -->
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <div class="pricing-price">9,900 <span class="period">FCFA/mois</span></div>
+                    <div class="pricing-commission">5% de commission par vente</div>
+                    <ul class="pricing-features">
+                        <li>Tout du plan gratuit</li>
+                        <li>Badge Starter</li>
+                        <li>Statistiques de base</li>
+                        <li>Jusqu'a 50 produits</li>
+                        <li>Support prioritaire</li>
+                    </ul>
+                    <a href="/auth/register" class="btn btn-primary" style="width:100%;">Choisir Starter</a>
+                </div>
+
+                <!-- PRO -->
+                <div class="pricing-card popular">
+                    <h3>Pro</h3>
+                    <div class="pricing-price">24,900 <span class="period">FCFA/mois</span></div>
+                    <div class="pricing-commission">3% de commission par vente</div>
+                    <ul class="pricing-features">
+                        <li>Tout du plan Starter</li>
+                        <li>Badge Premium verifie</li>
+                        <li>Mise en avant dans les resultats</li>
+                        <li>Produits illimites</li>
+                        <li>Statistiques avancees</li>
+                        <li>Section vendeurs premium</li>
+                    </ul>
+                    <a href="/auth/register" class="btn btn-primary" style="width:100%;">Choisir Pro</a>
+                </div>
+
+                <!-- BUSINESS -->
+                <div class="pricing-card">
+                    <h3>Business</h3>
+                    <div class="pricing-price">49,900 <span class="period">FCFA/mois</span></div>
+                    <div class="pricing-commission">1.5% de commission par vente</div>
+                    <ul class="pricing-features">
+                        <li>Tout du plan Pro</li>
+                        <li>Mise en avant page d'accueil</li>
+                        <li>Produits en vedette gratuits</li>
+                        <li>Badge Business exclusif</li>
+                        <li>Account manager dedie</li>
+                        <li>API d'integration</li>
+                        <li>Analytics en temps reel</li>
+                    </ul>
+                    <a href="/auth/register" class="btn btn-premium" style="width:100%;">Choisir Business</a>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div style="max-width:700px;margin:4rem auto 0;text-align:left;">
+                <h2 style="font-size:1.5rem;margin-bottom:2rem;" class="text-center">Questions frequentes</h2>
+                <div class="card" style="padding:1.5rem;margin-bottom:1rem;">
+                    <h3 style="font-size:1rem;margin-bottom:.5rem;">Puis-je changer de plan a tout moment ?</h3>
+                    <p style="font-size:.9rem;color:#64748b;">Oui, vous pouvez upgrader ou downgrader votre plan a tout moment. Le changement prend effet immediatement.</p>
+                </div>
+                <div class="card" style="padding:1.5rem;margin-bottom:1rem;">
+                    <h3 style="font-size:1rem;margin-bottom:.5rem;">Comment fonctionne la commission sans abonnement ?</h3>
+                    <p style="font-size:.9rem;color:#64748b;">Sans abonnement, une commission de 10% est prelevee automatiquement sur chaque vente. Aucun frais mensuel, vous ne payez que quand vous vendez.</p>
+                </div>
+                <div class="card" style="padding:1.5rem;margin-bottom:1rem;">
+                    <h3 style="font-size:1rem;margin-bottom:.5rem;">Quels moyens de paiement acceptez-vous ?</h3>
+                    <p style="font-size:.9rem;color:#64748b;">Nous acceptons les paiements par Mobile Money (Orange Money, Wave, MTN Money), carte bancaire et virement.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

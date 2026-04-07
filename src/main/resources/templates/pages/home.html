@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AfriShop - Marketplace | Connectez Vendeurs et Acheteurs</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <!-- HERO -->
+    <section class="hero text-center">
+        <div class="container">
+            <h1>La marketplace qui connecte<br/><span class="highlight">vendeurs</span> et <span class="highlight">acheteurs</span></h1>
+            <p>Decouvrez des milliers de produits de qualite proposes par nos vendeurs verifies. Profitez des mises en avant exclusives de nos vendeurs premium.</p>
+            <div class="hero-actions">
+                <a href="/products" class="btn btn-primary" style="background:#fff;color:#4f46e5;">Explorer le catalogue</a>
+                <a href="/auth/register" class="btn btn-outline">Devenir vendeur</a>
+            </div>
+            <div class="hero-stats">
+                <div><div class="stat-value">2,500+</div><div class="stat-label">Produits</div></div>
+                <div><div class="stat-value">500+</div><div class="stat-label">Vendeurs</div></div>
+                <div><div class="stat-value">15,000+</div><div class="stat-label">Acheteurs</div></div>
+                <div><div class="stat-value">98%</div><div class="stat-label">Satisfaction</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Categories populaires</h2>
+            </div>
+            <div class="cat-grid">
+                <a th:each="cat : ${categories}" th:href="@{/products(category=${cat.displayName})}" class="cat-card">
+                    <span class="cat-icon" th:text="${cat.icon}">icon</span>
+                    <span class="cat-name" th:text="${cat.displayName}">Categorie</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="section" style="background:#fff;border-radius:16px;margin:0 1rem;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Produits en vedette</h2>
+                <a href="/products">Voir tout &rarr;</a>
+            </div>
+            <div class="grid grid-4">
+                <div th:each="product : ${featuredProducts}" th:replace="~{fragments/layout :: productCard(${product})}"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PREMIUM SELLERS -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Vendeurs Premium</h2>
+                <a href="/sellers?premiumOnly=true">Voir tout &rarr;</a>
+            </div>
+            <div class="grid grid-3">
+                <div th:each="seller : ${premiumSellers}" th:replace="~{fragments/layout :: sellerCard(${seller})}"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section">
+        <div class="container">
+            <div class="cta text-center">
+                <h2>Vous etes vendeur ?</h2>
+                <p>Rejoignez notre plateforme et accedez a des milliers d'acheteurs. Devenez vendeur premium pour booster vos ventes.</p>
+                <div class="hero-actions">
+                    <a href="/auth/register" class="btn" style="background:#fff;color:#4f46e5;">Creer mon compte vendeur</a>
+                    <a href="/pricing" class="btn btn-outline">Decouvrir les offres Premium</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

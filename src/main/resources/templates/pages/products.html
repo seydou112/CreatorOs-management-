@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Catalogue - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <section class="section">
+        <div class="container">
+            <h1 style="font-size:1.75rem;margin-bottom:.5rem;">Catalogue</h1>
+            <p style="color:#64748b;margin-bottom:2rem;">Explorez tous nos produits</p>
+
+            <form class="filter-bar" method="get" action="/products">
+                <select name="category" onchange="this.form.submit()">
+                    <option value="all">Toutes les categories</option>
+                    <option th:each="cat : ${categories}" th:value="${cat.displayName}" th:text="${cat.displayName}" th:selected="${cat.displayName == selectedCategory}">Cat</option>
+                </select>
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="recent" th:selected="${selectedSort == 'recent'}">Plus recents</option>
+                    <option value="price-asc" th:selected="${selectedSort == 'price-asc'}">Prix croissant</option>
+                    <option value="price-desc" th:selected="${selectedSort == 'price-desc'}">Prix decroissant</option>
+                    <option value="rating" th:selected="${selectedSort == 'rating'}">Mieux notes</option>
+                </select>
+                <label>
+                    <input type="checkbox" name="premiumOnly" value="true" th:checked="${premiumOnly}" onchange="this.form.submit()"/>
+                    Produits Premium uniquement
+                </label>
+                <span class="count" th:text="${#lists.size(products)} + ' produit(s)'">0 produit(s)</span>
+            </form>
+
+            <div class="grid grid-4" th:if="${!#lists.isEmpty(products)}">
+                <div th:each="product : ${products}" th:replace="~{fragments/layout :: productCard(${product})}"></div>
+            </div>
+            <div th:if="${#lists.isEmpty(products)}" class="text-center" style="padding:4rem 0;">
+                <p style="color:#94a3b8;font-size:1.1rem;">Aucun produit trouve</p>
+                <a href="/products" class="btn btn-primary mt-2">Reinitialiser les filtres</a>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

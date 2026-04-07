@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${product.title} + ' - AfriShop'">Produit - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <section class="section">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="/">Accueil</a> / <a href="/products">Catalogue</a> / <span th:text="${product.title}">Produit</span>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-img">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span th:if="${product.premium}" class="badge badge-premium pos-tl">&#9733; Premium</span>
+                </div>
+
+                <div>
+                    <div style="display:flex;align-items:center;gap:.75rem;">
+                        <span class="detail-category" th:text="${product.category}">Categorie</span>
+                        <span th:if="${product.featured}" class="badge badge-featured">En vedette</span>
+                    </div>
+                    <h1 class="detail-title" th:text="${product.title}">Titre</h1>
+                    <div class="product-rating" style="font-size:.9rem;">
+                        <span class="stars" th:text="${'★'.repeat(product.ratingStars) + '☆'.repeat(5 - product.ratingStars)}">★★★★☆</span>
+                        <span th:text="${product.rating}">0</span>
+                        <span class="count" th:text="'(' + ${product.reviewCount} + ' avis)'"> (0 avis)</span>
+                    </div>
+                    <div class="detail-price" th:text="${product.formattedPrice}">0 FCFA</div>
+                    <p class="detail-desc" th:text="${product.description}">Description</p>
+
+                    <div class="seller-info-box">
+                        <div class="avatar" th:text="${product.seller.initial}">T</div>
+                        <div>
+                            <div style="display:flex;align-items:center;gap:.5rem;">
+                                <a th:href="@{/sellers/{id}(id=${product.seller.id})}" style="font-weight:600;color:#1e293b;" th:text="${product.seller.shopName}">Vendeur</a>
+                                <span th:if="${product.seller.premium}" class="badge badge-premium" style="font-size:.65rem;">&#9733; Premium</span>
+                                <span th:if="${product.seller.verified}" class="badge-verified">&#10004;</span>
+                            </div>
+                            <div style="font-size:.85rem;color:#64748b;" th:text="${product.seller.location}">Location</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-actions">
+                        <button class="btn btn-primary">Contacter le vendeur</button>
+                        <button class="btn btn-outline-dark" style="flex:0;padding:.75rem 1.25rem;">&#9825;</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related -->
+            <div th:if="${!#lists.isEmpty(relatedProducts)}" class="mt-4">
+                <h2 style="font-size:1.5rem;margin-bottom:1.5rem;">Produits similaires</h2>
+                <div class="grid grid-4">
+                    <div th:each="p : ${relatedProducts}" th:replace="~{fragments/layout :: productCard(${p})}"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

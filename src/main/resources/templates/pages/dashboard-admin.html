@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard Admin - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <section class="section">
+        <div class="container">
+            <div class="dash-header">
+                <div>
+                    <h1>Dashboard Admin</h1>
+                    <p class="subtitle">Gestion de la plateforme AfriShop</p>
+                </div>
+            </div>
+
+            <div class="dash-stats">
+                <div class="dash-stat">
+                    <div class="icon">&#127978;</div>
+                    <div class="value" th:text="${#lists.size(sellers)}">0</div>
+                    <div class="label">Vendeurs total</div>
+                </div>
+                <div class="dash-stat">
+                    <div class="icon">&#11088;</div>
+                    <div class="value" th:text="${#lists.size(premiumSellers)}">0</div>
+                    <div class="label">Vendeurs Premium</div>
+                </div>
+                <div class="dash-stat">
+                    <div class="icon">&#128230;</div>
+                    <div class="value" th:text="${#lists.size(products)}">0</div>
+                    <div class="label">Produits total</div>
+                </div>
+                <div class="dash-stat">
+                    <div class="icon">&#128176;</div>
+                    <div class="value">5,200,000</div>
+                    <div class="label">Revenu plateforme (FCFA)</div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
+                <!-- Sellers -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Vendeurs</h2>
+                        <a href="/sellers" style="color:#4f46e5;font-size:.85rem;">Voir tout</a>
+                    </div>
+                    <div th:each="seller : ${sellers}" style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;border-top:1px solid #f1f5f9;">
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                            <div style="width:36px;height:36px;background:#e0e7ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#4f46e5;font-size:.85rem;" th:text="${seller.initial}">T</div>
+                            <div>
+                                <div style="font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:.5rem;">
+                                    <span th:text="${seller.shopName}">Nom</span>
+                                    <span th:if="${seller.premium}" class="badge badge-premium" style="font-size:.6rem;">Premium</span>
+                                </div>
+                                <div style="font-size:.75rem;color:#94a3b8;" th:text="${seller.location}">Location</div>
+                            </div>
+                        </div>
+                        <span style="font-size:.8rem;color:#94a3b8;" th:text="${seller.totalSales} + ' ventes'">0 ventes</span>
+                    </div>
+                </div>
+
+                <!-- Products -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Produits recents</h2>
+                        <a href="/products" style="color:#4f46e5;font-size:.85rem;">Voir tout</a>
+                    </div>
+                    <div th:each="product : ${products}" style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;border-top:1px solid #f1f5f9;">
+                        <div>
+                            <div style="font-size:.85rem;font-weight:500;" th:text="${product.title}">Produit</div>
+                            <div style="font-size:.75rem;color:#94a3b8;display:flex;align-items:center;gap:.5rem;">
+                                <span th:text="${product.seller.shopName}">Vendeur</span>
+                                <span th:if="${product.premium}" style="color:#f59e0b;font-size:.7rem;">Premium</span>
+                            </div>
+                        </div>
+                        <span style="font-size:.85rem;font-weight:500;" th:text="${product.formattedPrice}">0 FCFA</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="card mt-3" style="padding:1.5rem;">
+                <h2 style="font-size:1.1rem;margin-bottom:1.25rem;">Actions administrateur</h2>
+                <div class="grid grid-4">
+                    <button style="padding:1.25rem;border-radius:12px;background:#eff6ff;color:#2563eb;border:none;cursor:pointer;text-align:center;">
+                        <div style="font-size:1.5rem;margin-bottom:.5rem;">&#128101;</div>
+                        <div style="font-size:.85rem;font-weight:500;">Gerer les vendeurs</div>
+                    </button>
+                    <button style="padding:1.25rem;border-radius:12px;background:#f0fdf4;color:#16a34a;border:none;cursor:pointer;text-align:center;">
+                        <div style="font-size:1.5rem;margin-bottom:.5rem;">&#128230;</div>
+                        <div style="font-size:.85rem;font-weight:500;">Gerer les produits</div>
+                    </button>
+                    <button style="padding:1.25rem;border-radius:12px;background:#fffbeb;color:#d97706;border:none;cursor:pointer;text-align:center;">
+                        <div style="font-size:1.5rem;margin-bottom:.5rem;">&#11088;</div>
+                        <div style="font-size:.85rem;font-weight:500;">Abonnements Premium</div>
+                    </button>
+                    <button style="padding:1.25rem;border-radius:12px;background:#faf5ff;color:#9333ea;border:none;cursor:pointer;text-align:center;">
+                        <div style="font-size:1.5rem;margin-bottom:.5rem;">&#128202;</div>
+                        <div style="font-size:.85rem;font-weight:500;">Rapports &amp; Analytics</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

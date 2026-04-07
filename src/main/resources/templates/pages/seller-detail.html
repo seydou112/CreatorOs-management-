@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${seller.shopName} + ' - AfriShop'">Vendeur - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <section class="section">
+        <div class="container">
+            <div class="card mb-3">
+                <div class="profile-cover">
+                    <span th:if="${seller.premium}" class="badge badge-premium pos-tr" style="font-size:.85rem;padding:.4rem 1rem;">&#9733; Premium</span>
+                </div>
+                <div class="profile-header">
+                    <div class="profile-avatar" th:text="${seller.initial}">T</div>
+                    <div class="profile-info" style="flex:1;padding-bottom:1rem;">
+                        <h1>
+                            <span th:text="${seller.shopName}">Nom</span>
+                            <span th:if="${seller.verified}" class="badge-verified" style="font-size:1.25rem;">&#10004;</span>
+                        </h1>
+                        <p th:text="${seller.location}">Location</p>
+                    </div>
+                    <a href="#" class="btn btn-primary" style="margin-bottom:1rem;">Contacter</a>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;" class="mb-4">
+                <div class="card" style="padding:1.5rem;">
+                    <h2 style="font-size:1.1rem;margin-bottom:.75rem;">A propos</h2>
+                    <p style="color:#64748b;line-height:1.7;" th:text="${seller.description}">Description</p>
+                    <div style="margin-top:1rem;">
+                        <span class="badge badge-plan" th:classappend="
+                            ${seller.subscriptionPlan.name() == 'BUSINESS'} ? ' badge-business' :
+                            ${seller.subscriptionPlan.name() == 'PRO'} ? ' badge-pro' :
+                            ${seller.subscriptionPlan.name() == 'STARTER'} ? ' badge-starter' : ' badge-none'"
+                            th:text="${seller.subscriptionPlan.displayName}">Plan</span>
+                    </div>
+                </div>
+                <div class="card" style="padding:1.5rem;">
+                    <h2 style="font-size:1.1rem;margin-bottom:1rem;">Statistiques</h2>
+                    <div style="display:flex;flex-direction:column;gap:1rem;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span style="color:#94a3b8;">Note</span>
+                            <span style="font-weight:600;color:#f59e0b;">&#9733; <span th:text="${seller.rating}">0</span>/5</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span style="color:#94a3b8;">Ventes totales</span>
+                            <span style="font-weight:600;" th:text="${seller.totalSales}">0</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span style="color:#94a3b8;">Produits</span>
+                            <span style="font-weight:600;" th:text="${#lists.size(sellerProducts)}">0</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span style="color:#94a3b8;">Membre depuis</span>
+                            <span style="font-weight:600;" th:text="${#temporals.format(seller.joinedAt, 'MMMM yyyy')}">Jan 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="font-size:1.5rem;margin-bottom:1.5rem;">Produits de <span th:text="${seller.shopName}">Vendeur</span></h2>
+            <div class="grid grid-4" th:if="${!#lists.isEmpty(sellerProducts)}">
+                <div th:each="product : ${sellerProducts}" th:replace="~{fragments/layout :: productCard(${product})}"></div>
+            </div>
+            <p th:if="${#lists.isEmpty(sellerProducts)}" class="text-center" style="color:#94a3b8;padding:2rem;">Aucun produit pour le moment</p>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

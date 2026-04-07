@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard Vendeur - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <section class="section">
+        <div class="container">
+            <div class="dash-header">
+                <div>
+                    <h1>Dashboard Vendeur</h1>
+                    <p class="subtitle">Bienvenue, TechZone Pro</p>
+                </div>
+                <div style="display:flex;gap:.75rem;">
+                    <a href="#" class="btn btn-primary" style="font-size:.85rem;">+ Ajouter un produit</a>
+                    <a href="/pricing" class="btn btn-premium" style="font-size:.85rem;">Passer Premium</a>
+                </div>
+            </div>
+
+            <div class="dash-stats">
+                <div class="dash-stat">
+                    <div class="icon">&#128230;</div>
+                    <div class="value">12</div>
+                    <div class="label">Produits actifs</div>
+                    <span class="change">+2</span>
+                </div>
+                <div class="dash-stat">
+                    <div class="icon">&#128722;</div>
+                    <div class="value">47</div>
+                    <div class="label">Ventes ce mois</div>
+                    <span class="change">+12%</span>
+                </div>
+                <div class="dash-stat">
+                    <div class="icon">&#128176;</div>
+                    <div class="value">1,250,000</div>
+                    <div class="label">Revenu (FCFA)</div>
+                    <span class="change">+8%</span>
+                </div>
+                <div class="dash-stat">
+                    <div class="icon">&#128065;</div>
+                    <div class="value">2,340</div>
+                    <div class="label">Vues profil</div>
+                    <span class="change">+15%</span>
+                </div>
+            </div>
+
+            <div class="dash-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Commandes recentes</h2>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Produit</th><th>Acheteur</th><th>Montant</th><th>Statut</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="color:#4f46e5;font-weight:500;">CMD-001</td>
+                                <td>Smartphone Galaxy Ultra</td>
+                                <td style="color:#64748b;">Amadou D.</td>
+                                <td style="font-weight:500;">450,000 FCFA</td>
+                                <td><span class="status status-delivered">Livre</span></td>
+                            </tr>
+                            <tr>
+                                <td style="color:#4f46e5;font-weight:500;">CMD-002</td>
+                                <td>Laptop Pro 15 pouces</td>
+                                <td style="color:#64748b;">Fatou S.</td>
+                                <td style="font-weight:500;">385,000 FCFA</td>
+                                <td><span class="status status-processing">En cours</span></td>
+                            </tr>
+                            <tr>
+                                <td style="color:#4f46e5;font-weight:500;">CMD-003</td>
+                                <td>Ecouteurs Bluetooth</td>
+                                <td style="color:#64748b;">Moussa K.</td>
+                                <td style="font-weight:500;">35,000 FCFA</td>
+                                <td><span class="status status-pending">En attente</span></td>
+                            </tr>
+                            <tr>
+                                <td style="color:#4f46e5;font-weight:500;">CMD-004</td>
+                                <td>Smartphone Galaxy Ultra</td>
+                                <td style="color:#64748b;">Aicha B.</td>
+                                <td style="font-weight:500;">450,000 FCFA</td>
+                                <td><span class="status status-delivered">Livre</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <div class="card mb-3">
+                        <div class="card-header"><h2>Actions rapides</h2></div>
+                        <div style="padding:.5rem;">
+                            <a href="#" class="quick-action">&#10133; Ajouter un produit</a>
+                            <a href="#" class="quick-action">&#128203; Gerer mes produits</a>
+                            <a href="#" class="quick-action">&#11088; Voir mes avis</a>
+                            <a href="#" class="quick-action">&#9998; Modifier mon profil</a>
+                            <a href="#" class="quick-action">&#9881; Parametres boutique</a>
+                        </div>
+                    </div>
+
+                    <div class="premium-cta">
+                        <h3>Passez Premium</h3>
+                        <p>Boostez votre visibilite et vos ventes avec un compte premium.</p>
+                        <ul>
+                            <li>Mise en avant sur la page d'accueil</li>
+                            <li>Badge Premium verifie</li>
+                            <li>Priorite dans les resultats</li>
+                            <li>Statistiques avancees</li>
+                        </ul>
+                        <a href="/pricing" class="btn btn-premium" style="width:100%;">Decouvrir les offres</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

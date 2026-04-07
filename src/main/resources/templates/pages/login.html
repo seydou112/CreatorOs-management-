@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Connexion - AfriShop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <div class="auth-container">
+        <div class="auth-card text-center">
+            <h1>Connexion</h1>
+            <p class="subtitle">Accedez a votre compte AfriShop</p>
+
+            <form method="post" action="#" style="text-align:left;">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="votre@email.com" required/>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" name="password" placeholder="••••••••" required/>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;font-size:.85rem;">
+                    <label style="display:flex;align-items:center;gap:.5rem;color:#64748b;cursor:pointer;">
+                        <input type="checkbox" name="remember"/> Se souvenir de moi
+                    </label>
+                    <a href="#" style="color:#4f46e5;">Mot de passe oublie ?</a>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Se connecter</button>
+            </form>
+
+            <div class="auth-link">
+                Pas encore de compte ? <a href="/auth/register">Creer un compte</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
