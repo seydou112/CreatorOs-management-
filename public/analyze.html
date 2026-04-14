@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analyse IA — Viral</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/analyze.css" />
+  <link rel="manifest" href="/manifest.json" />
+</head>
+<body>
+<div class="offline-banner" id="offlineBanner">Vous êtes hors ligne — l'analyse IA nécessite une connexion</div>
+
+<nav class="nav" id="navbar">
+  <a href="/" class="nav-logo">Viral</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/app.html">Générateur</a></li>
+    <li><a href="/blog.html">Blog</a></li>
+    <li><a href="/analyze.html" class="active">Analyse IA</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="analyze-bg-grid"></div>
+<div class="analyze-blob-1"></div>
+<div class="analyze-blob-2"></div>
+
+<main class="analyze-main">
+  <div class="analyze-header">
+    <span class="badge badge-guides">Analyse IA</span>
+    <h1>Optimisez votre <span class="text-gradient">stratégie</span></h1>
+    <p>Décrivez votre compte et obtenez un diagnostic complet avec un plan d'action personnalisé</p>
+  </div>
+
+  <div class="analyze-layout">
+    <!-- Formulaire -->
+    <section class="analyze-form-section">
+      <form id="analyzeForm" class="analyze-form">
+        <div class="form-group">
+          <label for="anPlateforme">Plateforme</label>
+          <div class="select-wrap">
+            <select id="anPlateforme" name="plateforme">
+              <option value="tiktok">🎵 TikTok</option>
+              <option value="instagram">📸 Instagram</option>
+              <option value="facebook">👥 Facebook</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="anDescription">Description de votre compte / niche</label>
+          <textarea id="anDescription" name="description" rows="3"
+            placeholder="Ex: Je crée du contenu sur la finance personnelle pour les 18-30 ans..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="anAbonnes">Abonnés</label>
+            <input type="text" id="anAbonnes" name="abonnes" placeholder="Ex: 2 500" />
+          </div>
+          <div class="form-group">
+            <label for="anVues">Vues moyennes</label>
+            <input type="text" id="anVues" name="vuesMoyennes" placeholder="Ex: 800" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="anEngagement">Taux d'engagement (%)</label>
+            <input type="text" id="anEngagement" name="tauxEngagement" placeholder="Ex: 3.2" />
+          </div>
+          <div class="form-group">
+            <label for="anObjectif">Objectif principal</label>
+            <div class="select-wrap">
+              <select id="anObjectif" name="objectif">
+                <option value="croissance">Croissance d'audience</option>
+                <option value="ventes">Générer des ventes</option>
+                <option value="notoriete">Notoriété de marque</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="anTypeContenu">Type de contenu publié</label>
+          <input type="text" id="anTypeContenu" name="typeContenu"
+            placeholder="Ex: Tutoriels, conseils pratiques, vlogs..." />
+        </div>
+
+        <div class="form-group">
+          <label for="anProbleme">Problème rencontré <span style="color:var(--text-dim);font-weight:400">(optionnel)</span></label>
+          <textarea id="anProbleme" name="probleme" rows="2"
+            placeholder="Ex: Mon engagement a chuté depuis 2 mois..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary analyze-btn" id="analyzeBtn">
+          <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <span id="analyzeBtnText">Analyser mon compte</span>
+          <div class="btn-spinner" id="analyzeBtnSpinner"></div>
+        </button>
+      </form>
+    </section>
+
+    <!-- Résultats analyse -->
+    <section class="analyze-results" id="analyzeResults">
+      <div class="analyze-placeholder" id="analyzePlaceholder">
+        <div class="placeholder-pulse"></div>
+        <p>Votre analyse apparaîtra ici</p>
+        <span>Score · Forces · Faiblesses · Plan d'action</span>
+      </div>
+
+      <!-- Overlay scan -->
+      <div class="scan-overlay" id="scanOverlay" style="display:none">
+        <div class="scan-line"></div>
+        <p class="scan-text">Analyse en cours...</p>
+      </div>
+
+      <div class="analyze-content" id="analyzeContent" style="display:none">
+        <!-- Score -->
+        <div class="score-card" id="scoreCard">
+          <div class="score-label">Score d'engagement</div>
+          <div class="score-display">
+            <span class="score-num" id="scoreNum">0</span>
+            <span class="score-max">/10</span>
+          </div>
+          <div class="score-track"><div class="score-bar" id="scoreBar"></div></div>
+          <p class="score-type" id="scoreType"></p>
+        </div>
+
+        <!-- Forces & Faiblesses -->
+        <div class="ff-grid">
+          <div class="ff-card ff-strengths" id="strengthsCard">
+            <div class="ff-header">
+              <span class="ff-icon">✓</span>
+              <span>Points forts</span>
+            </div>
+            <ul id="strengthsList"></ul>
+          </div>
+          <div class="ff-card ff-weaknesses" id="weaknessesCard">
+            <div class="ff-header">
+              <span class="ff-icon warn">⚠</span>
+              <span>Points faibles</span>
+            </div>
+            <ul id="weaknessesList"></ul>
+          </div>
+        </div>
+
+        <!-- Recommandations -->
+        <div class="reco-card" id="recoCard">
+          <div class="reco-header">
+            <span class="reco-icon">→</span>
+            Recommandations
+          </div>
+          <ul id="recoList" class="reco-list"></ul>
+        </div>
+
+        <!-- Plan d'action -->
+        <div class="plan-card" id="planCard">
+          <div class="plan-header">Plan d'action — 30 jours</div>
+          <p id="planText" class="plan-text"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="/js/pwa.js"></script>
+<script src="/js/analyze.js"></script>
+</body>
+</html>

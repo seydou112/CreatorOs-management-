@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — Viral</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/blog.css" />
+  <link rel="manifest" href="/manifest.json" />
+</head>
+<body>
+<div class="offline-banner" id="offlineBanner">Vous êtes hors ligne — seuls les articles déjà consultés sont disponibles</div>
+
+<nav class="nav" id="navbar">
+  <a href="/" class="nav-logo">Viral</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/app.html">Générateur</a></li>
+    <li><a href="/blog.html" class="active">Blog</a></li>
+    <li><a href="/analyze.html">Analyse IA</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="blog-bg-grid"></div>
+<div class="blog-blob"></div>
+
+<main class="blog-main">
+  <div class="blog-header">
+    <span class="badge badge-astuces">Blog</span>
+    <h1>Astuces, guides & <span class="text-gradient">nouveautés</span></h1>
+    <p>Tout ce qu'il faut savoir pour créer du contenu qui performe sur les réseaux sociaux</p>
+  </div>
+
+  <!-- Filtres -->
+  <div class="blog-filters">
+    <button class="filter-btn active" data-cat="tous">Tous</button>
+    <button class="filter-btn" data-cat="astuces">Astuces</button>
+    <button class="filter-btn" data-cat="guides">Guides</button>
+    <button class="filter-btn" data-cat="nouveautes">Nouveautés</button>
+    <button class="filter-btn" data-cat="tendances">Tendances</button>
+  </div>
+
+  <!-- Articles -->
+  <div class="blog-grid" id="blogGrid">
+    <div class="blog-loading">
+      <div class="loading-dot"></div>
+      <div class="loading-dot" style="animation-delay:0.2s"></div>
+      <div class="loading-dot" style="animation-delay:0.4s"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo">Viral</div>
+      <p>Transformez vos idées en contenu viral prêt à publier en moins de 10 secondes.</p>
+    </div>
+    <div class="footer-col"><h4>Produit</h4><ul><li><a href="/app.html">Générateur</a></li><li><a href="/analyze.html">Analyse IA</a></li></ul></div>
+    <div class="footer-col"><h4>Blog</h4><ul><li><a href="/blog.html?categorie=astuces">Astuces</a></li><li><a href="/blog.html?categorie=guides">Guides</a></li></ul></div>
+    <div class="footer-col"><h4>Plateformes</h4><ul><li><a href="/app.html">TikTok</a></li><li><a href="/app.html">Instagram</a></li><li><a href="/app.html">Facebook</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Viral.</span><span>Propulsé par l'IA</span></div>
+</footer>
+
+<script src="/js/pwa.js"></script>
+<script src="/js/blog.js"></script>
+</body>
+</html>

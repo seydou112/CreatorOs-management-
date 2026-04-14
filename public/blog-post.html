@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article — Viral</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/blog.css" />
+  <link rel="manifest" href="/manifest.json" />
+</head>
+<body>
+<div class="offline-banner" id="offlineBanner">Vous êtes hors ligne</div>
+
+<nav class="nav" id="navbar">
+  <a href="/" class="nav-logo">Viral</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/app.html">Générateur</a></li>
+    <li><a href="/blog.html" class="active">Blog</a></li>
+    <li><a href="/analyze.html">Analyse IA</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="post-bg-grid"></div>
+
+<main class="post-main" id="postMain">
+  <div class="blog-loading" id="postLoading">
+    <div class="loading-dot"></div>
+    <div class="loading-dot" style="animation-delay:0.2s"></div>
+    <div class="loading-dot" style="animation-delay:0.4s"></div>
+  </div>
+
+  <div id="postContent" style="display:none">
+    <div class="post-back">
+      <a href="/blog.html" class="btn btn-secondary" style="padding:0.5rem 1rem; font-size:0.85rem">
+        ← Retour au blog
+      </a>
+    </div>
+
+    <div class="post-hero">
+      <img id="postImage" src="" alt="" class="post-hero-img" />
+      <div class="post-hero-overlay"></div>
+    </div>
+
+    <div class="post-container">
+      <div class="post-meta">
+        <span class="badge" id="postBadge"></span>
+        <span class="post-date" id="postDate"></span>
+        <span class="post-read" id="postRead"></span>
+      </div>
+      <h1 id="postTitle" class="post-title"></h1>
+      <div class="post-tags" id="postTags"></div>
+      <div class="post-body" id="postBody"></div>
+
+      <div class="post-cta">
+        <h3>Prêt à créer du contenu viral ?</h3>
+        <p>Utilisez le générateur Viral pour créer votre contenu en quelques secondes.</p>
+        <a href="/app.html" class="btn btn-primary btn-lg">Générer maintenant →</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="postNotFound" style="display:none" class="post-not-found">
+    <h2>Article introuvable</h2>
+    <a href="/blog.html" class="btn btn-primary">Retour au blog</a>
+  </div>
+</main>
+
+<script src="/js/pwa.js"></script>
+<script src="/js/blog.js"></script>
+</body>
+</html>
