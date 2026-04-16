@@ -84,26 +84,34 @@ document.getElementById('analyzeForm')?.addEventListener('submit', async (e) => 
     probleme: document.getElementById('anProbleme').value
   };
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 45000);
+
   try {
     const res = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      signal: controller.signal
     });
 
     const data = await res.json();
     if (!res.ok) { showToast(data.error || 'Erreur lors de l\'analyse.', 'error'); return; }
 
-    // Délai minime pour que le scan soit visible
     await new Promise(r => setTimeout(r, 800));
     scanOverlay.style.display = 'none';
     displayResults(data);
 
-  } catch {
-    showToast('Connexion impossible. Vérifiez votre connexion.', 'error');
+  } catch (err) {
     scanOverlay.style.display = 'none';
     document.getElementById('analyzePlaceholder').style.display = 'flex';
+    if (err.name === 'AbortError') {
+      showToast('Le serveur met du temps à répondre. Réessayez dans 30 secondes.', 'error');
+    } else {
+      showToast('Connexion impossible. Vérifiez votre connexion.', 'error');
+    }
   } finally {
+    clearTimeout(timeout);
     setLoading(false);
   }
 });

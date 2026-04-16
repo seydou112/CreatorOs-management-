@@ -104,11 +104,15 @@ form?.addEventListener('submit', async (e) => {
     mode: document.getElementById('mode').value
   };
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 45000);
+
   try {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      signal: controller.signal
     });
 
     const remaining = res.headers.get('X-Remaining-Generations');
@@ -125,9 +129,14 @@ form?.addEventListener('submit', async (e) => {
     displayResults(data);
     saveToHistory({ ...body, ...data });
     renderHistory();
-  } catch {
-    showToast('Connexion impossible. Vérifiez votre connexion.', 'error');
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      showToast('Le serveur met du temps à répondre. Réessayez dans 30 secondes.', 'error');
+    } else {
+      showToast('Connexion impossible. Vérifiez votre connexion.', 'error');
+    }
   } finally {
+    clearTimeout(timeout);
     setLoading(false);
   }
 });
