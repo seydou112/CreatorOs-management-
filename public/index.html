@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viral — Générateur de contenu viral IA</title>
+  <meta name="description" content="Créez du contenu viral pour TikTok, Instagram et Facebook en moins de 10 secondes grâce à l'IA." />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/home.css" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#7c3aed" />
+</head>
+<body>
+
+<!-- Bannière hors ligne -->
+<div class="offline-banner" id="offlineBanner">
+  Vous êtes hors ligne — certaines fonctionnalités sont indisponibles
+</div>
+
+<!-- Navigation -->
+<nav class="nav" id="navbar">
+  <a href="/" class="nav-logo">Viral</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/" class="active">Accueil</a></li>
+    <li><a href="/app.html">Générateur</a></li>
+    <li><a href="/blog.html">Blog</a></li>
+    <li><a href="/analyze.html">Analyse IA</a></li>
+    <li><a href="/app.html" class="nav-cta">Commencer</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Arrière-plan animé -->
+<canvas id="particleCanvas"></canvas>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="grid-overlay"></div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      IA Générative · Contenu Viral · Résultats Immédiats
+    </div>
+    <h1 class="hero-title">
+      <span id="heroText"></span><span class="cursor">|</span>
+    </h1>
+    <p class="hero-sub">
+      Transformez une idée en contenu viral prêt à publier en moins de 10 secondes.
+      Hook puissant, script optimisé, call-to-action percutant — tout automatisé par l'IA.
+    </p>
+    <div class="hero-actions">
+      <a href="/app.html" class="btn btn-primary btn-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg>
+        Générer du contenu
+      </a>
+      <a href="#fonctionnalites" class="btn btn-secondary btn-lg">Découvrir</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">10s</span><span class="stat-label">Temps de génération</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Plateformes supportées</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Modes de génération</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="preview-card">
+      <div class="preview-label">HOOK</div>
+      <p class="preview-hook">Tu fais encore cette erreur qui tue ton engagement sur TikTok...</p>
+      <div class="preview-label">SCRIPT</div>
+      <p class="preview-script">J'ai analysé 500 vidéos virales et j'ai découvert un pattern que personne ne t'explique...</p>
+      <div class="preview-cta-label">CALL TO ACTION</div>
+      <p class="preview-cta">Sauvegarde cette vidéo et partage-la à un créateur qui en a besoin.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FONCTIONNALITÉS ===== -->
+<section class="section" id="fonctionnalites">
+  <div class="container">
+    <h2 class="section-title">Tout ce dont vous avez besoin</h2>
+    <p class="section-sub">Une suite d'outils conçus pour transformer vos idées en contenu qui performe</p>
+    <div class="features-grid">
+      <a href="/app.html" class="feature-card reveal">
+        <div class="feature-icon feature-icon-purple">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Générateur Viral</h3>
+        <p>Hook + Script + CTA optimisés pour TikTok, Instagram et Facebook en quelques secondes.</p>
+        <span class="feature-link">Générer →</span>
+      </a>
+      <a href="/blog.html" class="feature-card reveal" style="animation-delay:0.1s">
+        <div class="feature-icon feature-icon-cyan">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </div>
+        <h3>Blog & Astuces</h3>
+        <p>Articles sur les stratégies virales, nouveautés et guides plateforme par plateforme.</p>
+        <span class="feature-link">Lire →</span>
+      </a>
+      <a href="/analyze.html" class="feature-card reveal" style="animation-delay:0.2s">
+        <div class="feature-icon feature-icon-amber">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3>Analyse IA</h3>
+        <p>Score d'engagement, points faibles, recommandations et plan d'action personnalisé pour votre compte.</p>
+        <span class="feature-link">Analyser →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MODES ===== -->
+<section class="section modes-section">
+  <div class="container">
+    <h2 class="section-title">3 modes de génération</h2>
+    <p class="section-sub">Choisissez le style adapté à votre stratégie et votre audience</p>
+    <div class="modes-grid">
+      <div class="mode-card reveal">
+        <div class="mode-number">01</div>
+        <h3>Normal</h3>
+        <p>Contenu équilibré, professionnel et optimisé. Idéal pour construire une image de marque solide.</p>
+        <div class="mode-tags"><span>Professionnel</span><span>Équilibré</span><span>Fiable</span></div>
+      </div>
+      <div class="mode-card mode-featured reveal" style="animation-delay:0.1s">
+        <div class="mode-badge">Le plus viral</div>
+        <div class="mode-number">02</div>
+        <h3>Viral Extrême</h3>
+        <p>Contenu choquant, provocateur et impossible à ignorer. Pour exploser les compteurs d'engagement.</p>
+        <div class="mode-tags"><span>Choquant</span><span>Provocateur</span><span>Explosif</span></div>
+      </div>
+      <div class="mode-card reveal" style="animation-delay:0.2s">
+        <div class="mode-number">03</div>
+        <h3>Storytelling</h3>
+        <p>Narration émotionnelle et immersive qui touche l'audience en profondeur et crée une connexion durable.</p>
+        <div class="mode-tags"><span>Émotionnel</span><span>Narratif</span><span>Inspirant</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TARIFS ===== -->
+<section class="section" id="tarifs">
+  <div class="container">
+    <h2 class="section-title">Tarifs simples</h2>
+    <p class="section-sub">Commencez gratuitement, passez premium quand vous êtes prêt</p>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-plan">Gratuit</div>
+        <div class="pricing-price"><span class="price-amount">0€</span><span class="price-period">/mois</span></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> 3 générations par jour</li>
+          <li><span class="check">✓</span> Tous les modes disponibles</li>
+          <li><span class="check">✓</span> Toutes les plateformes</li>
+          <li><span class="check">✓</span> Accès au blog</li>
+          <li><span class="check">✓</span> Historique 20 contenus</li>
+          <li><span class="check">✓</span> Mode hors ligne</li>
+        </ul>
+        <a href="/app.html" class="btn btn-secondary" style="width:100%">Commencer gratuitement</a>
+      </div>
+      <div class="pricing-card pricing-featured reveal" style="animation-delay:0.1s">
+        <div class="pricing-badge">Recommandé</div>
+        <div class="pricing-plan">Premium</div>
+        <div class="pricing-price"><span class="price-amount">9€</span><span class="price-period">/mois</span></div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Générations illimitées</li>
+          <li><span class="check">✓</span> Analyse IA de vos comptes</li>
+          <li><span class="check">✓</span> Tous les modes disponibles</li>
+          <li><span class="check">✓</span> Toutes les plateformes</li>
+          <li><span class="check">✓</span> Historique complet</li>
+          <li><span class="check">✓</span> Support prioritaire</li>
+        </ul>
+        <a href="/app.html" class="btn btn-primary" style="width:100%">Passer Premium</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo">Viral</div>
+      <p>Transformez vos idées en contenu viral prêt à publier en moins de 10 secondes.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Produit</h4>
+      <ul>
+        <li><a href="/app.html">Générateur</a></li>
+        <li><a href="/analyze.html">Analyse IA</a></li>
+        <li><a href="#tarifs">Tarifs</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Ressources</h4>
+      <ul>
+        <li><a href="/blog.html">Blog</a></li>
+        <li><a href="/blog.html?categorie=guides">Guides</a></li>
+        <li><a href="/blog.html?categorie=astuces">Astuces</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Plateformes</h4>
+      <ul>
+        <li><a href="/app.html">TikTok</a></li>
+        <li><a href="/app.html">Instagram</a></li>
+        <li><a href="/app.html">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Viral. Tous droits réservés.</span>
+    <span>Propulsé par l'IA</span>
+  </div>
+</footer>
+
+<script src="/js/pwa.js"></script>
+<script src="/js/home.js"></script>
+</body>
+</html>
