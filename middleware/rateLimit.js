@@ -40,9 +40,13 @@ export function rateLimit(req, res, next) {
     });
   }
 
-  entry.count += 1;
-  store.set(key, entry);
+  res.setHeader('X-Remaining-Generations', String(limit - entry.count - 1));
 
-  res.setHeader('X-Remaining-Generations', String(limit - entry.count));
+  // Le quota n'est consommé qu'après une génération réussie
+  req.commitUsage = () => {
+    entry.count += 1;
+    store.set(key, entry);
+  };
+
   next();
 }

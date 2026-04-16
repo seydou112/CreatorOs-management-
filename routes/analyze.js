@@ -11,6 +11,7 @@ router.post('/', validateAnalyze, rateLimit, async (req, res, next) => {
     const { plateforme, description, abonnes, vuesMoyennes, tauxEngagement, typeContenu, objectif, probleme } = req.body;
     const userPrompt = buildAnalyzePrompt({ plateforme, description, abonnes, vuesMoyennes, tauxEngagement, typeContenu, objectif, probleme });
     const result = await analyzeAccount(userPrompt);
+    req.commitUsage();
     res.json(result);
   } catch (err) {
     next(err);

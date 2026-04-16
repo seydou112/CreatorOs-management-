@@ -11,6 +11,7 @@ router.post('/', validateGenerate, rateLimit, async (req, res, next) => {
     const { theme, cible, objectif, plateforme, mode } = req.body;
     const userPrompt = buildUserPrompt({ theme, cible, objectif, plateforme, mode });
     const result = await generateContent(userPrompt);
+    req.commitUsage();
     res.json(result);
   } catch (err) {
     next(err);
