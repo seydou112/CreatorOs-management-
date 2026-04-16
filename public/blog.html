@@ -6,6 +6,7 @@
   <title>Blog — Viral</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/blog.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
   <link rel="manifest" href="/manifest.json" />
 </head>
 <body>
@@ -19,7 +20,18 @@
     <li><a href="/blog.html" class="active">Blog</a></li>
     <li><a href="/analyze.html">Analyse IA</a></li>
   </ul>
-  <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  <div class="nav-right">
+    <div class="nav-auth" id="navAuth">
+      <button class="btn btn-ghost btn-sm" onclick="openAuthModal('login')">Connexion</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">S'inscrire</button>
+    </div>
+    <div class="nav-user" id="navUser" style="display:none">
+      <span class="nav-user-name" id="navUserEmail"></span>
+      <span class="badge badge-premium" id="navPremiumBadge" style="display:none">✦ Premium</span>
+      <button class="btn btn-ghost btn-sm" onclick="authLogout()">Déconnexion</button>
+    </div>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  </div>
 </nav>
 
 <div class="blog-bg-grid"></div>
@@ -64,7 +76,8 @@
   <div class="footer-bottom"><span>© 2026 Viral.</span><span>Propulsé par l'IA</span></div>
 </footer>
 
+<script src="/js/auth.js" defer></script>
 <script src="/js/pwa.js"></script>
-<script src="/js/blog.js"></script>
+<script src="/js/blog.js" defer></script>
 </body>
 </html>

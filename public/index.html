@@ -7,6 +7,7 @@
   <meta name="description" content="Créez du contenu viral pour TikTok, Instagram et Facebook en moins de 10 secondes grâce à l'IA." />
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/home.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#7c3aed" />
 </head>
@@ -25,10 +26,18 @@
     <li><a href="/app.html">Générateur</a></li>
     <li><a href="/blog.html">Blog</a></li>
     <li><a href="/analyze.html">Analyse IA</a></li>
-    <li><a href="/app.html" class="nav-cta">Commencer</a></li>
   </ul>
-  <div class="nav-toggle" id="navToggle">
-    <span></span><span></span><span></span>
+  <div class="nav-right">
+    <div class="nav-auth" id="navAuth">
+      <button class="btn btn-ghost btn-sm" onclick="openAuthModal('login')">Connexion</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">S'inscrire</button>
+    </div>
+    <div class="nav-user" id="navUser" style="display:none">
+      <span class="nav-user-name" id="navUserEmail"></span>
+      <span class="badge badge-premium" id="navPremiumBadge" style="display:none">✦ Premium</span>
+      <button class="btn btn-ghost btn-sm" onclick="authLogout()">Déconnexion</button>
+    </div>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
   </div>
 </nav>
 
@@ -217,6 +226,7 @@
   </div>
 </footer>
 
+<script src="/js/auth.js" defer></script>
 <script src="/js/pwa.js"></script>
 <script src="/js/home.js"></script>
 </body>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viral-v1';
+const CACHE_NAME = 'viral-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -12,10 +12,12 @@ const STATIC_ASSETS = [
   '/css/app.css',
   '/css/blog.css',
   '/css/analyze.css',
+  '/css/auth.css',
   '/js/home.js',
   '/js/app.js',
   '/js/blog.js',
   '/js/analyze.js',
+  '/js/auth.js',
   '/js/pwa.js'
 ];
 

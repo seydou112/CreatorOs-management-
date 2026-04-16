@@ -6,6 +6,7 @@
   <title>Analyse IA — Viral</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/analyze.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
   <link rel="manifest" href="/manifest.json" />
 </head>
 <body>
@@ -19,7 +20,18 @@
     <li><a href="/blog.html">Blog</a></li>
     <li><a href="/analyze.html" class="active">Analyse IA</a></li>
   </ul>
-  <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  <div class="nav-right">
+    <div class="nav-auth" id="navAuth">
+      <button class="btn btn-ghost btn-sm" onclick="openAuthModal('login')">Connexion</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">S'inscrire</button>
+    </div>
+    <div class="nav-user" id="navUser" style="display:none">
+      <span class="nav-user-name" id="navUserEmail"></span>
+      <span class="badge badge-premium" id="navPremiumBadge" style="display:none">✦ Premium</span>
+      <button class="btn btn-ghost btn-sm" onclick="authLogout()">Déconnexion</button>
+    </div>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  </div>
 </nav>
 
 <div class="analyze-bg-grid"></div>
@@ -166,7 +178,8 @@
 </main>
 
 <div class="toast" id="toast"></div>
+<script src="/js/auth.js" defer></script>
 <script src="/js/pwa.js"></script>
-<script src="/js/analyze.js"></script>
+<script src="/js/analyze.js" defer></script>
 </body>
 </html>

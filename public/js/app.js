@@ -87,6 +87,13 @@ form?.addEventListener('submit', async (e) => {
   }
   document.getElementById('themeError').textContent = '';
 
+  // Auth guard
+  if (!window.getToken?.()) {
+    window._authPendingAction = () => form.dispatchEvent(new Event('submit'));
+    window.openAuthModal?.('login');
+    return;
+  }
+
   if (!navigator.onLine) {
     showToast('Vous êtes hors ligne — génération impossible.', 'error');
     return;
@@ -110,10 +117,19 @@ form?.addEventListener('submit', async (e) => {
   try {
     const res = await fetch('/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${window.getToken?.() || ''}`
+      },
       body: JSON.stringify(body),
       signal: controller.signal
     });
+
+    if (res.status === 401) {
+      window._authPendingAction = () => form.dispatchEvent(new Event('submit'));
+      window.openAuthModal?.('login');
+      return;
+    }
 
     const remaining = res.headers.get('X-Remaining-Generations');
     if (remaining !== null) updateUsageDisplay(remaining);
