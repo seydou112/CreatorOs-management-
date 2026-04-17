@@ -459,3 +459,21 @@ function renderHistory() {
 // ===== INIT =====
 updateUsageDisplay(loadUsage());
 renderHistory();
+
+// Gérer share_target et protocol_handler (?theme= dans l'URL)
+(function handleUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const sharedTheme = params.get('theme') || params.get('text') || params.get('title');
+  if (sharedTheme) {
+    const themeInput = document.getElementById('theme');
+    if (themeInput) {
+      themeInput.value = decodeURIComponent(sharedTheme).slice(0, 200);
+      themeInput.focus();
+    }
+  }
+  // Nettoyer l'URL sans rechargement
+  if (params.has('theme') || params.has('text') || params.has('title') || params.has('source')) {
+    const clean = window.location.pathname;
+    window.history.replaceState({}, '', clean);
+  }
+})();

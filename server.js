@@ -15,6 +15,15 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
+// En-tête Service-Worker-Allowed pour les PWA
+app.use((req, res, next) => {
+  if (req.path === '/sw.js') {
+    res.setHeader('Service-Worker-Allowed', '/');
+    res.setHeader('Cache-Control', 'no-cache');
+  }
+  next();
+});
+
 // Webhook Stripe doit recevoir le body brut — AVANT express.json()
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhookHandler);
 
@@ -26,6 +35,21 @@ app.use('/api/stripe', stripeRouter);
 app.use('/api/generate', generateRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/analyze', analyzeRouter);
+
+// Widget data endpoint (PWA Widgets — Windows 11)
+app.get('/api/widget/data', (req, res) => {
+  const tips = [
+    'Un hook percutant capte l\'attention en moins de 2 secondes.',
+    'Le storytelling émotionnel triple l\'engagement sur Instagram.',
+    'Utilisez 3-5 hashtags de niche pour maximiser la portée.',
+    'La durée idéale pour TikTok : entre 21 et 34 secondes.',
+    'Les contenus qui posent une question obtiennent 2× plus de commentaires.'
+  ];
+  res.json({
+    tip: tips[Math.floor(Date.now() / 86400000) % tips.length],
+    updated: new Date().toISOString()
+  });
+});
 
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
