@@ -25,7 +25,7 @@
   white-space: nowrap;
 }
 .badge-premium {
-  background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(124,58,237,0.15));
+  background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(59,130,246,0.15));
   border: 1px solid rgba(245,158,11,0.4);
   color: var(--accent);
   padding: 0.18rem 0.55rem;
@@ -136,7 +136,7 @@
 }
 .auth-field input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
 }
 .auth-field input::placeholder { color: var(--text-dim); }
 
@@ -163,7 +163,7 @@
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: rgba(5,5,8,0.92);
+  background: rgba(5,8,15,0.92);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
