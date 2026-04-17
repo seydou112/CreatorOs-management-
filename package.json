@@ -16,5 +16,8 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.0",
     "stripe": "^17.0.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }
