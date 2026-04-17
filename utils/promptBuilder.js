@@ -37,13 +37,31 @@ const plateformeMap = {
   instagram: "Instagram (esthétique et inspiration, Reels et carrousels, hashtags, texte visuel fort)"
 };
 
-export function buildUserPrompt({ theme, cible, objectif, plateforme, mode }) {
+const tonMap = {
+  audacieux: "Ton audacieux et direct — affirmatif, percutant, sans détour",
+  inspirant: "Ton inspirant et positif — élève l'audience, donne envie de se dépasser",
+  drole: "Ton humoristique et léger — humour, autodérision, rend le contenu addictif",
+  professionnel: "Ton professionnel et crédible — expertise, chiffres, autorité naturelle",
+  educatif: "Ton éducatif et bienveillant — explique simplement, donne envie d'apprendre"
+};
+
+const dureeMap = {
+  '15s': "Durée ultra-courte (15 secondes max) — script très court, chaque mot compte, va droit au but",
+  '30s': "Durée courte (30 secondes) — contenu concis et percutant, 3 actes express",
+  '60s': "Durée standard (1 minute) — développe l'argument, plus de contexte et de détails",
+  'long': "Long format (2-3 minutes) — narration riche, storytelling complet, développement approfondi"
+};
+
+export function buildUserPrompt({ theme, cible, objectif, plateforme, mode, ton, duree }) {
   let prompt = `Crée du contenu viral sur le sujet : "${theme}"
 
 Public cible : ${audienceMap[cible]}
 Objectif : ${objectifMap[objectif]}
 Plateforme : ${plateformeMap[plateforme]}
 Langue : Français`;
+
+  if (ton && tonMap[ton]) prompt += `\nTon souhaité : ${tonMap[ton]}`;
+  if (duree && dureeMap[duree]) prompt += `\nDurée cible : ${dureeMap[duree]}`;
 
   if (mode === 'viral_extreme') {
     prompt += `

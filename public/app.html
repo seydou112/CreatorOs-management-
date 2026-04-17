@@ -130,6 +130,81 @@
         <p>Votre contenu viral apparaîtra ici</p>
       </div>
 
+      <!-- Panneau de progression IA -->
+      <div class="gen-progress" id="genProgress" style="display:none">
+        <div class="gen-header">
+          <div class="gen-ai-dot" id="genAiDot"></div>
+          <span id="genHeaderLabel">L'IA crée votre contenu</span>
+        </div>
+
+        <div class="gen-steps">
+          <div class="gen-step" id="gstep1">
+            <span class="gstep-dot"></span>
+            <span class="gstep-label">Analyse de votre sujet</span>
+            <span class="gstep-time" id="gstep1time"></span>
+          </div>
+          <div class="gen-step" id="gstep2">
+            <span class="gstep-dot"></span>
+            <span class="gstep-label">Détection des tendances virales</span>
+            <span class="gstep-time" id="gstep2time"></span>
+          </div>
+          <div class="gen-step" id="gstep3">
+            <span class="gstep-dot"></span>
+            <span class="gstep-label">Personnalisation du contenu</span>
+            <span class="gstep-time" id="gstep3time"></span>
+          </div>
+          <div class="gen-step" id="gstep4">
+            <span class="gstep-dot"></span>
+            <span class="gstep-label">Rédaction du hook percutant</span>
+            <span class="gstep-time" id="gstep4time"></span>
+          </div>
+          <div class="gen-step" id="gstep5">
+            <span class="gstep-dot"></span>
+            <span class="gstep-label">Optimisation du script</span>
+            <span class="gstep-time" id="gstep5time"></span>
+          </div>
+          <div class="gen-step" id="gstep6">
+            <span class="gstep-dot"></span>
+            <span class="gstep-label">Finalisation du call-to-action</span>
+            <span class="gstep-time" id="gstep6time"></span>
+          </div>
+        </div>
+
+        <!-- Questions interactives — pause après step 2 -->
+        <div class="gen-questions" id="genQuestions" style="display:none">
+          <div class="gen-q-intro">
+            <span class="gen-q-icon">💬</span>
+            <div>
+              <strong>Deux questions rapides</strong>
+              <p>Pour personnaliser votre contenu selon vos préférences</p>
+            </div>
+          </div>
+          <div class="gen-q-group">
+            <label>Quel ton pour ce contenu ?</label>
+            <div class="gen-pills" id="tonPills">
+              <button class="gen-pill active" data-val="audacieux">🔥 Audacieux</button>
+              <button class="gen-pill" data-val="inspirant">✨ Inspirant</button>
+              <button class="gen-pill" data-val="drole">😄 Drôle</button>
+              <button class="gen-pill" data-val="professionnel">💼 Professionnel</button>
+              <button class="gen-pill" data-val="educatif">📚 Éducatif</button>
+            </div>
+          </div>
+          <div class="gen-q-group">
+            <label>Durée cible du contenu ?</label>
+            <div class="gen-pills" id="dureePills">
+              <button class="gen-pill" data-val="15s">⚡ 15 secondes</button>
+              <button class="gen-pill active" data-val="30s">🎯 30 secondes</button>
+              <button class="gen-pill" data-val="60s">📱 1 minute</button>
+              <button class="gen-pill" data-val="long">🎬 Long format</button>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="continueGenBtn" style="width:100%; margin-top:0.75rem">
+            Continuer la génération
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg>
+          </button>
+        </div>
+      </div>
+
       <div class="result-content" id="resultContent" style="display:none">
         <!-- Carte Hook -->
         <div class="result-card hook-card" id="hookCard">

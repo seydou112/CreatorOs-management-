@@ -9,8 +9,8 @@ const router = Router();
 
 router.post('/', requireAuth, validateGenerate, rateLimit, async (req, res, next) => {
   try {
-    const { theme, cible, objectif, plateforme, mode } = req.body;
-    const userPrompt = buildUserPrompt({ theme, cible, objectif, plateforme, mode });
+    const { theme, cible, objectif, plateforme, mode, ton, duree } = req.body;
+    const userPrompt = buildUserPrompt({ theme, cible, objectif, plateforme, mode, ton, duree });
     const result = await generateContent(userPrompt);
     await req.commitUsage();
     res.json(result);
