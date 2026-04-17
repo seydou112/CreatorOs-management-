@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viral-v4';
+const CACHE_NAME = 'viral-v5';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -25,7 +25,9 @@ const STATIC_ASSETS = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-maskable-512.png',
-  '/widgets/generator-widget.json'
+  '/widgets/generator-widget.json',
+  '/screenshots/desktop.png',
+  '/screenshots/mobile.png'
 ];
 
 // ===== INSTALLATION =====

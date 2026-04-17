@@ -120,7 +120,7 @@
   "related_applications": [
     {
       "platform": "webapp",
-      "url": "https://viral-content.app/manifest.json"
+      "url": "https://viral-app-deploy.onrender.com/manifest.json"
     }
   ],
 
@@ -133,7 +133,7 @@
   },
 
   "scope_extensions": [
-    { "origin": "https://viral-content.app" }
+    { "origin": "https://viral-app-deploy.onrender.com" }
   ],
 
   "widgets": [
