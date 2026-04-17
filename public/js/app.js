@@ -382,6 +382,45 @@ document.getElementById('regenerateBtn')?.addEventListener('click', () => {
   form?.dispatchEvent(new Event('submit'));
 });
 
+// ===== BIBLIOTHÈQUE =====
+const LIBRARY_KEY = 'viral_library';
+let _lastSavedData = null;
+
+document.getElementById('saveLibraryBtn')?.addEventListener('click', () => {
+  if (!_variations.length) return;
+  const v = _variations[_activeVar] || _variations[0];
+  _lastSavedData = v;
+  const titleInput = document.getElementById('saveTitle');
+  const themeVal = document.getElementById('theme')?.value.trim();
+  if (titleInput) titleInput.value = themeVal ? themeVal.slice(0, 80) : '';
+  const tagsInput = document.getElementById('saveTags');
+  if (tagsInput) tagsInput.value = '';
+  document.getElementById('saveModal')?.classList.add('open');
+  setTimeout(() => titleInput?.focus(), 100);
+});
+
+document.getElementById('confirmSaveBtn')?.addEventListener('click', () => {
+  if (!_lastSavedData) return;
+  const title = document.getElementById('saveTitle')?.value.trim() || 'Sans titre';
+  const tagsRaw = document.getElementById('saveTags')?.value || '';
+  const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+  const plateforme = document.getElementById('plateforme')?.value || '';
+  const lib = JSON.parse(localStorage.getItem(LIBRARY_KEY) || '[]');
+  lib.unshift({
+    id: Date.now(),
+    title,
+    tags,
+    plateforme,
+    date: new Date().toLocaleDateString('fr-FR'),
+    ..._lastSavedData
+  });
+  if (lib.length > 100) lib.splice(100);
+  localStorage.setItem(LIBRARY_KEY, JSON.stringify(lib));
+  document.getElementById('saveModal')?.classList.remove('open');
+  _lastSavedData = null;
+  showToast('Contenu sauvegardé dans la bibliothèque !');
+});
+
 // ===== HISTORIQUE =====
 function saveToHistory(entry) {
   const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');

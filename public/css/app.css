@@ -538,6 +538,29 @@
   transform: translateY(-1px);
 }
 
+/* ===== MODAL FORMULAIRE (sauvegarde bibliothèque) ===== */
+.modal-form .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.modal-form .form-group label {
+  font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.modal-form .form-group input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem 1rem;
+  color: var(--text);
+  font-size: 0.92rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modal-form .form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+}
+.modal-form .form-group input::placeholder { color: var(--text-dim); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .app-layout { grid-template-columns: 1fr; }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viral-v2';
+const CACHE_NAME = 'viral-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -6,6 +6,7 @@ const STATIC_ASSETS = [
   '/blog.html',
   '/blog-post.html',
   '/analyze.html',
+  '/library.html',
   '/manifest.json',
   '/css/style.css',
   '/css/home.css',
@@ -13,12 +14,14 @@ const STATIC_ASSETS = [
   '/css/blog.css',
   '/css/analyze.css',
   '/css/auth.css',
+  '/css/library.css',
   '/js/home.js',
   '/js/app.js',
   '/js/blog.js',
   '/js/analyze.js',
   '/js/auth.js',
-  '/js/pwa.js'
+  '/js/pwa.js',
+  '/js/library.js'
 ];
 
 // Installation : mise en cache des fichiers statiques

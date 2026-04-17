@@ -23,6 +23,7 @@
     <li><a href="/app.html" class="active">Générateur</a></li>
     <li><a href="/blog.html">Blog</a></li>
     <li><a href="/analyze.html">Analyse IA</a></li>
+    <li><a href="/library.html">Bibliothèque</a></li>
   </ul>
   <div class="nav-right">
     <div class="nav-auth" id="navAuth">
@@ -280,6 +281,10 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             Tout copier
           </button>
+          <button class="btn btn-secondary" id="saveLibraryBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Sauvegarder
+          </button>
           <button class="btn btn-secondary" id="regenerateBtn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 11-2.7-6.2L23 10"/></svg>
             Régénérer
@@ -296,6 +301,29 @@
     <div class="history-grid" id="historyGrid"></div>
   </section>
 </main>
+
+<!-- Modal Sauvegarder en bibliothèque -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <div class="modal-emoji">📚</div>
+    <h3>Sauvegarder en bibliothèque</h3>
+    <p>Donnez un nom et des tags pour retrouver ce contenu facilement.</p>
+    <div class="modal-form">
+      <div class="form-group" style="margin-top:1rem">
+        <label for="saveTitle">Titre</label>
+        <input type="text" id="saveTitle" placeholder="Ex: Contenu TikTok – coaching" maxlength="80" />
+      </div>
+      <div class="form-group" style="margin-top:0.75rem">
+        <label for="saveTags">Tags (séparés par des virgules)</label>
+        <input type="text" id="saveTags" placeholder="Ex: coaching, motivation, 30s" maxlength="120" />
+      </div>
+    </div>
+    <div class="modal-actions" style="margin-top:1.25rem">
+      <button class="btn btn-primary" id="confirmSaveBtn">Sauvegarder</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('saveModal').classList.remove('open')">Annuler</button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal limite atteinte -->
 <div class="modal-overlay" id="limitModal">
