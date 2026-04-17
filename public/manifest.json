@@ -14,7 +14,6 @@
   "lang": "fr",
   "dir": "ltr",
   "prefer_related_applications": false,
-  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
 
   "icons": [
     {
@@ -117,13 +116,6 @@
     }
   },
 
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://viral-app-deploy.onrender.com/manifest.json"
-    }
-  ],
-
   "note_taking": {
     "new_note_url": "/app.html?source=note"
   },
@@ -131,10 +123,6 @@
   "edge_side_panel": {
     "preferred_width": 400
   },
-
-  "scope_extensions": [
-    { "origin": "https://viral-app-deploy.onrender.com" }
-  ],
 
   "widgets": [
     {

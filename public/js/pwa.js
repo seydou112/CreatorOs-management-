@@ -59,10 +59,14 @@ window.applyUpdate = () => {
 };
 
 // ===== NOTIFICATIONS PUSH =====
-const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
+// La clé VAPID publique doit être générée une seule fois via :
+//   npx web-push generate-vapid-keys
+// Puis stockée dans .env (VAPID_PUBLIC_KEY) et injectée ici côté serveur.
+// Sans clé valide, les push notifications ne fonctionnent pas.
+const VAPID_PUBLIC_KEY = window.VAPID_PUBLIC_KEY || null;
 
 async function subscribeToPush() {
-  if (!_swRegistration || !('PushManager' in window)) return null;
+  if (!_swRegistration || !('PushManager' in window) || !VAPID_PUBLIC_KEY) return null;
   try {
     const existing = await _swRegistration.pushManager.getSubscription();
     if (existing) return existing;
@@ -83,6 +87,7 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 window.requestPushPermission = async () => {
+  if (!VAPID_PUBLIC_KEY) return false;
   const perm = await Notification.requestPermission();
   if (perm === 'granted') {
     await subscribeToPush();
