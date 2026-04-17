@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tendances IA — Viral</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/trends.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
+</head>
+<body>
+
+<nav class="nav" id="navbar">
+  <a href="/" class="nav-logo">Viral</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/app.html">Générateur</a></li>
+    <li><a href="/trends.html" class="active">Tendances IA</a></li>
+    <li><a href="/analyze.html">Analyse IA</a></li>
+    <li><a href="/library.html">Bibliothèque</a></li>
+    <li><a href="/dashboard.html">Mon espace</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-auth" id="navAuth">
+      <button class="btn btn-ghost btn-sm" onclick="openAuthModal('login')">Connexion</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">S'inscrire</button>
+    </div>
+    <div class="nav-user" id="navUser" style="display:none">
+      <span class="nav-user-name" id="navUserEmail"></span>
+      <span class="badge badge-premium" id="navPremiumBadge" style="display:none">✦ Premium</span>
+      <button class="btn btn-ghost btn-sm" onclick="authLogout()">Déconnexion</button>
+    </div>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="trends-bg"></div>
+
+<main class="trends-main">
+
+  <div class="trends-hero">
+    <div class="trends-hero-badge">🌐 Connecté à Internet</div>
+    <h1>Tendances & Concurrents <span class="gradient-text">en temps réel</span></h1>
+    <p>Propulsé par Gemini IA avec Google Search — données actuelles, pas des suppositions.</p>
+  </div>
+
+  <!-- Onglets -->
+  <div class="trends-tabs">
+    <button class="trends-tab active" data-tab="trends" onclick="switchTab('trends')">
+      📈 Tendances du moment
+    </button>
+    <button class="trends-tab" data-tab="competitor" onclick="switchTab('competitor')">
+      🔍 Analyser un concurrent
+    </button>
+  </div>
+
+  <!-- Section Tendances -->
+  <section id="tabTrends" class="trends-section">
+    <div class="trends-form-card">
+      <form id="trendsForm" onsubmit="searchTrends(event)">
+        <div class="trends-form-row">
+          <div class="trends-field">
+            <label>Votre sujet ou niche</label>
+            <input type="text" id="trendsSubject" placeholder="ex: fitness, cuisine africaine, crypto…" maxlength="120" required />
+          </div>
+          <div class="trends-field trends-field-sm">
+            <label>Plateforme</label>
+            <select id="trendsPlatform">
+              <option value="tiktok">TikTok</option>
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="facebook">Facebook</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg trends-btn" id="trendsBtn">
+          <span class="btn-icon">🌐</span>
+          <span>Rechercher les tendances</span>
+        </button>
+      </form>
+    </div>
+
+    <div id="trendsResult" class="trends-result" style="display:none"></div>
+  </section>
+
+  <!-- Section Concurrent -->
+  <section id="tabCompetitor" class="trends-section" style="display:none">
+    <div class="trends-form-card">
+      <form id="competitorForm" onsubmit="analyzeCompetitor(event)">
+        <div class="trends-form-row">
+          <div class="trends-field">
+            <label>Nom du concurrent ou compte</label>
+            <input type="text" id="competitorName" placeholder="ex: @nomducompte ou nom de la marque" maxlength="120" required />
+          </div>
+          <div class="trends-field trends-field-sm">
+            <label>Plateforme</label>
+            <select id="competitorPlatform">
+              <option value="tiktok">TikTok</option>
+              <option value="instagram">Instagram</option>
+              <option value="youtube">YouTube</option>
+              <option value="facebook">Facebook</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg trends-btn" id="competitorBtn">
+          <span class="btn-icon">🔍</span>
+          <span>Analyser ce concurrent</span>
+        </button>
+      </form>
+    </div>
+
+    <div id="competitorResult" class="trends-result" style="display:none"></div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="/js/auth.js" defer></script>
+<script src="/js/pwa.js"></script>
+<script src="/js/trends.js" defer></script>
+</body>
+</html>

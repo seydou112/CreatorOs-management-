@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bibliothèque — Viral</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/library.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
+</head>
+<body>
+
+<nav class="nav" id="navbar">
+  <a href="/" class="nav-logo">Viral</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/app.html">Générateur</a></li>
+    <li><a href="/trends.html">Tendances IA</a></li>
+    <li><a href="/analyze.html">Analyse IA</a></li>
+    <li><a href="/library.html" class="active">Bibliothèque</a></li>
+    <li><a href="/dashboard.html">Mon espace</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-auth" id="navAuth">
+      <button class="btn btn-ghost btn-sm" onclick="openAuthModal('login')">Connexion</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">S'inscrire</button>
+    </div>
+    <div class="nav-user" id="navUser" style="display:none">
+      <span class="nav-user-name" id="navUserEmail"></span>
+      <span class="badge badge-premium" id="navPremiumBadge" style="display:none">✦ Premium</span>
+      <button class="btn btn-ghost btn-sm" onclick="authLogout()">Déconnexion</button>
+    </div>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="lib-bg-grid"></div>
+
+<main class="lib-main">
+  <div class="lib-header">
+    <div>
+      <h1>Ma <span class="text-gradient">Bibliothèque</span></h1>
+      <p>Vos contenus sauvegardés — disponibles hors ligne</p>
+    </div>
+    <a href="/app.html" class="btn btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg>
+      Générer du contenu
+    </a>
+  </div>
+
+  <!-- Barre de recherche + filtres -->
+  <div class="lib-controls">
+    <div class="lib-search-wrap">
+      <svg class="lib-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="libSearch" placeholder="Rechercher par titre ou tag…" class="lib-search" />
+    </div>
+    <div class="lib-filters">
+      <button class="lib-filter active" data-platform="">Toutes</button>
+      <button class="lib-filter" data-platform="tiktok">🎵 TikTok</button>
+      <button class="lib-filter" data-platform="instagram">📸 Instagram</button>
+      <button class="lib-filter" data-platform="facebook">👥 Facebook</button>
+    </div>
+  </div>
+
+  <!-- Tags populaires -->
+  <div class="lib-popular-tags" id="popularTags"></div>
+
+  <!-- Stats -->
+  <div class="lib-stats" id="libStats"></div>
+
+  <!-- Grille contenu -->
+  <div class="lib-empty" id="libEmpty" style="display:none">
+    <div class="lib-empty-icon">📚</div>
+    <h3>Bibliothèque vide</h3>
+    <p>Générez du contenu et sauvegardez-le pour le retrouver ici.</p>
+    <a href="/app.html" class="btn btn-primary" style="margin-top:1rem">Générer maintenant</a>
+  </div>
+
+  <div class="lib-grid" id="libGrid"></div>
+</main>
+
+<!-- Modal aperçu contenu -->
+<div class="modal-overlay lib-preview-overlay" id="libPreviewModal">
+  <div class="modal lib-preview-modal">
+    <button class="modal-close" onclick="closePreview()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div id="previewTags" class="preview-tags"></div>
+    <h3 id="previewTitle" class="preview-title"></h3>
+    <div class="preview-meta" id="previewMeta"></div>
+
+    <div class="preview-section">
+      <div class="result-label">HOOK</div>
+      <p id="previewHook" class="preview-hook"></p>
+    </div>
+    <div class="preview-section">
+      <div class="result-label">SCRIPT</div>
+      <div id="previewScript" class="preview-script"></div>
+    </div>
+    <div class="preview-section">
+      <div class="result-label">CALL TO ACTION</div>
+      <p id="previewCta" class="preview-cta"></p>
+    </div>
+
+    <div class="preview-actions">
+      <button class="btn btn-primary" id="previewCopyAll">Tout copier</button>
+      <button class="btn btn-secondary" id="previewUseInGen">Ouvrir dans le générateur</button>
+      <button class="btn btn-danger" id="previewDelete">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/js/auth.js" defer></script>
+<script src="/js/pwa.js"></script>
+<script src="/js/library.js" defer></script>
+</body>
+</html>

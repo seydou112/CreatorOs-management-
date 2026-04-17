@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon espace — Viral</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#3b82f6" />
+</head>
+<body>
+
+<nav class="nav" id="navbar">
+  <a href="/" class="nav-logo">Viral</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/app.html">Générateur</a></li>
+    <li><a href="/trends.html">Tendances IA</a></li>
+    <li><a href="/analyze.html">Analyse IA</a></li>
+    <li><a href="/library.html">Bibliothèque</a></li>
+    <li><a href="/dashboard.html" class="active">Mon espace</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-auth" id="navAuth">
+      <button class="btn btn-ghost btn-sm" onclick="openAuthModal('login')">Connexion</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')">S'inscrire</button>
+    </div>
+    <div class="nav-user" id="navUser" style="display:none">
+      <span class="nav-user-name" id="navUserEmail"></span>
+      <span class="badge badge-premium" id="navPremiumBadge" style="display:none">✦ Premium</span>
+      <button class="btn btn-ghost btn-sm" onclick="authLogout()">Déconnexion</button>
+    </div>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="dash-bg"></div>
+
+<main class="dash-main">
+
+  <!-- En-tête profil -->
+  <div class="dash-header">
+    <div class="dash-avatar" id="dashAvatar">?</div>
+    <div class="dash-identity">
+      <h1 id="dashEmail">Chargement...</h1>
+      <div class="dash-badges" id="dashBadges"></div>
+    </div>
+    <button class="btn btn-primary" onclick="openPremiumModal()" id="upgradeBtnHeader" style="display:none">
+      ⚡ Passer Premium
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="dash-stats" id="dashStats">
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-val" id="statUsed">—</div>
+      <div class="stat-label">Utilisées aujourd'hui</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✦</div>
+      <div class="stat-val" id="statRemaining">—</div>
+      <div class="stat-label">Restantes aujourd'hui</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-val" id="statTotal">—</div>
+      <div class="stat-label">Total généré</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-val" id="statMember">—</div>
+      <div class="stat-label">Membre depuis</div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+
+    <!-- Statut Premium -->
+    <div class="dash-card" id="premiumCard">
+      <div class="dash-card-title">Abonnement</div>
+      <div id="premiumStatus">
+        <div class="premium-free">
+          <p>Vous êtes sur le plan <strong>Gratuit</strong></p>
+          <p class="hint">3 générations par jour. Passez Premium pour des générations illimitées.</p>
+          <button class="btn btn-primary" style="margin-top:1rem; width:100%" onclick="openPremiumModal()">
+            ⚡ Passer Premium
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Changer mot de passe -->
+    <div class="dash-card">
+      <div class="dash-card-title">Sécurité</div>
+      <form id="passwordForm" onsubmit="changePassword(event)">
+        <div class="form-group" style="margin-bottom:0.75rem">
+          <label>Mot de passe actuel</label>
+          <input type="password" id="currentPwd" placeholder="••••••••" />
+        </div>
+        <div class="form-group" style="margin-bottom:0.75rem">
+          <label>Nouveau mot de passe</label>
+          <input type="password" id="newPwd" placeholder="6 caractères minimum" />
+        </div>
+        <div class="form-group" style="margin-bottom:1rem">
+          <label>Confirmer</label>
+          <input type="password" id="confirmPwd" placeholder="••••••••" />
+        </div>
+        <div class="form-error" id="pwdError"></div>
+        <button type="submit" class="btn btn-secondary" style="width:100%" id="pwdBtn">
+          Mettre à jour le mot de passe
+        </button>
+      </form>
+    </div>
+
+    <!-- Accès rapide -->
+    <div class="dash-card">
+      <div class="dash-card-title">Accès rapide</div>
+      <div class="quick-links">
+        <a href="/app.html" class="quick-link">
+          <span class="ql-icon">⚡</span>
+          <span>Générateur viral</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="/trends.html" class="quick-link">
+          <span class="ql-icon">🌐</span>
+          <span>Tendances & Concurrents</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="/analyze.html" class="quick-link">
+          <span class="ql-icon">📈</span>
+          <span>Analyse IA de compte</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a href="/library.html" class="quick-link">
+          <span class="ql-icon">📚</span>
+          <span>Ma bibliothèque</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Historique local -->
+    <div class="dash-card dash-card-wide">
+      <div class="dash-card-title">Dernières générations</div>
+      <div id="dashHistory"></div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="/js/auth.js" defer></script>
+<script src="/js/pwa.js"></script>
+<script src="/js/dashboard.js" defer></script>
+</body>
+</html>

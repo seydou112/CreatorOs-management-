@@ -1,48 +1,53 @@
-import * as store from '../data/usageStore.js';
+import pool from '../data/db.js';
 
-function getResetAt() {
-  const now = new Date();
-  const midnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-  return midnight.getTime();
-}
+export async function rateLimit(req, res, next) {
+  try {
+    if (!pool) return res.status(503).json({ error: 'Base de données non configurée.' });
 
-function getClientKey(req) {
-  const forwarded = req.headers['x-forwarded-for'];
-  const ip = forwarded ? forwarded.split(',')[0].trim() : req.ip;
-  return `ip:${ip}`;
-}
+    const today = new Date().toISOString().split('T')[0];
+    const result = await pool.query(
+      'SELECT is_premium, daily_count, daily_reset FROM users WHERE id = $1',
+      [req.userId]
+    );
+    const user = result.rows[0];
+    if (!user) return res.status(401).json({ error: 'Utilisateur introuvable.' });
 
-export function rateLimit(req, res, next) {
-  // Bypass premium
-  const authHeader = req.headers['authorization'];
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  if (token && process.env.PREMIUM_TOKEN && token === process.env.PREMIUM_TOKEN) {
-    res.setHeader('X-Remaining-Generations', 'unlimited');
-    return next();
+    if (user.is_premium) {
+      res.setHeader('X-Remaining-Generations', 'unlimited');
+      req.commitUsage = async () => {
+        await pool.query(
+          'UPDATE users SET total_generations = COALESCE(total_generations,0) + 1 WHERE id = $1',
+          [req.userId]
+        );
+      };
+      return next();
+    }
+
+    const limit = parseInt(process.env.FREE_DAILY_LIMIT || '3');
+    const userReset = user.daily_reset ? new Date(user.daily_reset).toISOString().split('T')[0] : null;
+    const count = userReset === today ? (user.daily_count || 0) : 0;
+
+    if (count >= limit) {
+      return res.status(429).json({
+        error: 'Limite journalière atteinte. Passez en Premium pour des générations illimitées.',
+        remaining: 0
+      });
+    }
+
+    res.setHeader('X-Remaining-Generations', String(limit - count - 1));
+
+    req.commitUsage = async () => {
+      await pool.query(
+        `UPDATE users
+         SET daily_count = $1, daily_reset = $2,
+             total_generations = COALESCE(total_generations,0) + 1
+         WHERE id = $3`,
+        [count + 1, today, req.userId]
+      );
+    };
+
+    next();
+  } catch (err) {
+    next(err);
   }
-
-  const limit = parseInt(process.env.FREE_DAILY_LIMIT || '3');
-  const key = getClientKey(req);
-  const now = Date.now();
-
-  let entry = store.get(key);
-
-  if (!entry || now > entry.resetAt) {
-    entry = { count: 0, resetAt: getResetAt() };
-  }
-
-  if (entry.count >= limit) {
-    const resetAt = new Date(entry.resetAt).toISOString();
-    return res.status(429).json({
-      error: 'Limite journalière atteinte. Passez en Premium pour des générations illimitées.',
-      remaining: 0,
-      resetAt
-    });
-  }
-
-  entry.count += 1;
-  store.set(key, entry);
-
-  res.setHeader('X-Remaining-Generations', String(limit - entry.count));
-  next();
 }
