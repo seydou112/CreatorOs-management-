@@ -206,6 +206,14 @@
       </div>
 
       <div class="result-content" id="resultContent" style="display:none">
+
+        <!-- Tabs A/B/C -->
+        <div class="variation-tabs" id="variationTabs">
+          <button class="var-tab active" data-var="0">⚡ Version A</button>
+          <button class="var-tab" data-var="1">✦ Version B</button>
+          <button class="var-tab" data-var="2">✶ Version C</button>
+        </div>
+
         <!-- Carte Hook -->
         <div class="result-card hook-card" id="hookCard">
           <div class="result-label">HOOK</div>
@@ -231,6 +239,39 @@
           <button class="copy-btn" data-target="ctaText" title="Copier le CTA">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
+        </div>
+
+        <!-- Score viral -->
+        <div class="result-card score-card" id="scoreCard">
+          <div class="result-label">SCORE VIRAL</div>
+          <div class="score-display">
+            <span class="score-number" id="scoreNumber">0</span>
+            <span class="score-max">/100</span>
+          </div>
+          <div class="score-bar-track">
+            <div class="score-bar-fill" id="scoreBarFill"></div>
+          </div>
+          <p class="score-explication" id="scoreExplication"></p>
+        </div>
+
+        <!-- Hashtags -->
+        <div class="result-card hashtags-card" id="hashtagsCard">
+          <div class="result-label">HASHTAGS SUGGÉRÉS</div>
+          <div class="hashtag-groups">
+            <div class="hashtag-group">
+              <span class="hashtag-group-label">🔥 Tendance</span>
+              <div class="hashtag-pills" id="hashtagsTendance"></div>
+            </div>
+            <div class="hashtag-group">
+              <span class="hashtag-group-label">🎯 Niche</span>
+              <div class="hashtag-pills" id="hashtagsNiche"></div>
+            </div>
+            <div class="hashtag-group">
+              <span class="hashtag-group-label">📊 Volume</span>
+              <div class="hashtag-pills" id="hashtagsVolume"></div>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="copyAllHashtags" style="width:100%; margin-top:0.75rem">Copier tous les hashtags</button>
         </div>
 
         <!-- Actions -->

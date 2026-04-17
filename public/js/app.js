@@ -253,10 +253,30 @@ form?.addEventListener('submit', async (e) => {
 });
 
 // ===== AFFICHAGE RÉSULTATS =====
-function displayResults({ hook, script, call_to_action }) {
+let _variations = [];
+let _activeVar = 0;
+
+function displayResults(data) {
   document.getElementById('resultPlaceholder').style.display = 'none';
   document.getElementById('resultContent').style.display = 'flex';
 
+  // Support ancien format (hook/script/cta) + nouveau (variations)
+  _variations = data.variations || [{ hook: data.hook, script: data.script, call_to_action: data.call_to_action }];
+  _activeVar = 0;
+
+  const tabsEl = document.getElementById('variationTabs');
+  if (tabsEl) tabsEl.style.display = _variations.length > 1 ? 'flex' : 'none';
+  document.querySelectorAll('.var-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
+
+  displayVariation(_variations[0], true);
+
+  if (data.score_viral !== undefined) showScoreCard(data.score_viral, data.score_explication);
+  if (data.hashtags) showHashtagsCard(data.hashtags);
+
+  document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function displayVariation({ hook, script, call_to_action }, animate = false) {
   const hookEl = document.getElementById('hookText');
   hookEl.textContent = hook;
   hookEl.classList.remove('shimmer');
@@ -264,36 +284,84 @@ function displayResults({ hook, script, call_to_action }) {
   const scriptEl = document.getElementById('scriptText');
   scriptEl.innerHTML = '';
   script.split('\n\n').forEach(para => {
-    if (para.trim()) {
-      const p = document.createElement('p');
-      p.textContent = para.trim();
-      scriptEl.appendChild(p);
-    }
+    if (para.trim()) { const p = document.createElement('p'); p.textContent = para.trim(); scriptEl.appendChild(p); }
   });
-  if (!scriptEl.children.length) {
-    const p = document.createElement('p');
-    p.textContent = script;
-    scriptEl.appendChild(p);
-  }
+  if (!scriptEl.children.length) { const p = document.createElement('p'); p.textContent = script; scriptEl.appendChild(p); }
 
   document.getElementById('ctaText').textContent = call_to_action;
 
-  ['hookCard', 'scriptCard', 'ctaCard'].forEach((id, i) => {
-    const card = document.getElementById(id);
-    card.classList.remove('visible');
-    setTimeout(() => {
-      card.classList.add('visible');
-      if (id === 'hookCard') {
-        setTimeout(() => {
-          hookEl.classList.add('shimmer');
-          setTimeout(() => hookEl.classList.remove('shimmer'), 2100);
-        }, 400);
-      }
-    }, i * 180);
-  });
-
-  document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (animate) {
+    ['hookCard', 'scriptCard', 'ctaCard'].forEach((id, i) => {
+      const card = document.getElementById(id);
+      card.classList.remove('visible');
+      setTimeout(() => {
+        card.classList.add('visible');
+        if (id === 'hookCard') setTimeout(() => { hookEl.classList.add('shimmer'); setTimeout(() => hookEl.classList.remove('shimmer'), 2100); }, 400);
+      }, i * 180);
+    });
+  }
 }
+
+// Tabs A/B/C
+document.getElementById('variationTabs')?.addEventListener('click', e => {
+  const tab = e.target.closest('.var-tab');
+  if (!tab || !_variations.length) return;
+  const idx = parseInt(tab.dataset.var);
+  if (!_variations[idx]) return;
+  document.querySelectorAll('.var-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  _activeVar = idx;
+  displayVariation(_variations[idx], false);
+  showToast(`Version ${['A','B','C'][idx]} sélectionnée`);
+});
+
+// Score viral
+function showScoreCard(score, explication) {
+  const card = document.getElementById('scoreCard');
+  const numEl = document.getElementById('scoreNumber');
+  const fillEl = document.getElementById('scoreBarFill');
+  const explEl = document.getElementById('scoreExplication');
+  if (!card) return;
+
+  card.className = 'result-card score-card';
+  if (score >= 76) card.classList.add('score-high');
+  else if (score >= 51) card.classList.add('score-medium');
+  else card.classList.add('score-low');
+
+  if (explEl) explEl.textContent = explication || '';
+
+  setTimeout(() => {
+    card.classList.add('visible');
+    const start = Date.now();
+    const tick = () => {
+      const p = Math.min((Date.now() - start) / 1200, 1);
+      numEl.textContent = Math.round((1 - Math.pow(1 - p, 3)) * score);
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    setTimeout(() => { if (fillEl) fillEl.style.width = `${score}%`; }, 150);
+  }, 650);
+}
+
+// Hashtags
+function showHashtagsCard(hashtags) {
+  const card = document.getElementById('hashtagsCard');
+  if (!card) return;
+  ['tendance', 'niche', 'volume'].forEach(g => {
+    const el = document.getElementById('hashtags' + g.charAt(0).toUpperCase() + g.slice(1));
+    if (!el || !hashtags[g]) return;
+    el.innerHTML = (hashtags[g] || []).map(tag =>
+      `<button class="hashtag-pill" onclick="copyTag('${tag}')">${tag}</button>`
+    ).join('');
+  });
+  setTimeout(() => card.classList.add('visible'), 950);
+}
+
+window.copyTag = tag => navigator.clipboard.writeText(tag).then(() => showToast(`${tag} copié !`));
+
+document.getElementById('copyAllHashtags')?.addEventListener('click', () => {
+  const tags = [...document.querySelectorAll('.hashtag-pill')].map(p => p.textContent).join(' ');
+  navigator.clipboard.writeText(tags).then(() => showToast('Tous les hashtags copiés !'));
+});
 
 // ===== COPIE =====
 document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -305,10 +373,8 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 });
 
 document.getElementById('copyAllBtn')?.addEventListener('click', () => {
-  const hook = document.getElementById('hookText')?.textContent || '';
-  const script = document.getElementById('scriptText')?.innerText || '';
-  const cta = document.getElementById('ctaText')?.textContent || '';
-  navigator.clipboard.writeText(`HOOK\n${hook}\n\nSCRIPT\n${script}\n\nCALL TO ACTION\n${cta}`)
+  const v = _variations[_activeVar] || {};
+  navigator.clipboard.writeText(`HOOK\n${v.hook || ''}\n\nSCRIPT\n${v.script || ''}\n\nCALL TO ACTION\n${v.call_to_action || ''}`)
     .then(() => showToast('Contenu complet copié !'));
 });
 

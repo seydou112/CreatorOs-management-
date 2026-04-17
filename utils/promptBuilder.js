@@ -11,13 +11,33 @@ Tes contenus respectent ces principes fondamentaux :
 Règles de format absolu :
 - Tu réponds UNIQUEMENT avec du JSON valide, sans aucun texte autour
 - Pas de blocs markdown, pas d'explication, aucun texte hors du JSON
-- Le JSON doit avoir exactement ces 3 clés : "hook", "script", "call_to_action"
-- "hook" : une phrase d'accroche ultra-puissante (max 2 lignes)
-- "script" : le corps du contenu en 3 à 5 paragraphes courts, séparés par une ligne vide
-- "call_to_action" : un appel à l'action clair et motivant (1-2 phrases)
+- Le JSON doit avoir exactement ces clés :
 
-Exemple de format de réponse :
-{"hook":"...", "script":"...", "call_to_action":"..."}`;
+{
+  "variations": [
+    {"hook": "...", "script": "...", "call_to_action": "..."},
+    {"hook": "...", "script": "...", "call_to_action": "..."},
+    {"hook": "...", "script": "...", "call_to_action": "..."}
+  ],
+  "score_viral": 85,
+  "score_explication": "Explication honnête du score en 1 phrase.",
+  "hashtags": {
+    "tendance": ["#tag1", "#tag2", "#tag3", "#tag4"],
+    "niche": ["#tag5", "#tag6", "#tag7", "#tag8"],
+    "volume": ["#tag9", "#tag10", "#tag11", "#tag12"]
+  }
+}
+
+Instructions pour les variations :
+- Variation 1 (Version A) : angle le plus direct et percutant
+- Variation 2 (Version B) : angle storytelling / émotionnel
+- Variation 3 (Version C) : angle éducatif ou contre-intuitif
+- Chaque variation = un angle différent, pas une simple reformulation
+- "hook" : phrase d'accroche ultra-puissante (max 2 lignes)
+- "script" : corps du contenu en 3-5 paragraphes courts séparés par une ligne vide
+- "call_to_action" : appel à l'action clair (1-2 phrases)
+- "score_viral" : entier de 0 à 100 estimant honnêtement le potentiel viral
+- "hashtags" : 4 hashtags par groupe, sans espaces, avec #`;
 
 const audienceMap = {
   debutant: "des débutants qui découvrent le sujet et cherchent des conseils simples et accessibles",

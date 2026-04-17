@@ -21,15 +21,18 @@ export async function generateContent(userPrompt) {
   const model = client.getGenerativeModel({
     model: 'gemini-2.0-flash',
     systemInstruction: SYSTEM_PROMPT_GENERATION,
-    generationConfig: { maxOutputTokens: 1024, temperature: 0.9 }
+    generationConfig: { maxOutputTokens: 2048, temperature: 0.9 }
   });
 
   const result = await model.generateContent(userPrompt);
   const text = result.response.text();
   const parsed = parseJson(text);
 
-  if (!parsed.hook || !parsed.script || !parsed.call_to_action) {
+  if (!parsed.variations || !Array.isArray(parsed.variations) || parsed.variations.length === 0) {
     throw new Error('Structure de réponse incomplète');
+  }
+  for (const v of parsed.variations) {
+    if (!v.hook || !v.script || !v.call_to_action) throw new Error('Variation incomplète dans la réponse IA');
   }
 
   return parsed;

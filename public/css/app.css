@@ -453,6 +453,91 @@
   color: var(--primary-light);
 }
 
+/* ===== TABS A/B/C ===== */
+.variation-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.var-tab {
+  flex: 1;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.var-tab:hover { border-color: var(--primary); color: var(--text); }
+.var-tab.active {
+  background: rgba(124,58,237,0.15);
+  border-color: var(--primary);
+  color: var(--primary-light);
+}
+
+/* ===== SCORE VIRAL ===== */
+.score-card { border-color: rgba(16,185,129,0.25); }
+.score-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin: 0.4rem 0 0.75rem;
+}
+.score-number {
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1;
+  transition: color 0.5s;
+}
+.score-max { font-size: 1.2rem; color: var(--text-dim); font-weight: 700; }
+.score-bar-track {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.score-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  width: 0;
+  transition: width 1.3s cubic-bezier(0.4,0,0.2,1);
+}
+.score-high .score-number { color: var(--success); }
+.score-high .score-bar-fill { background: linear-gradient(90deg, #10b981, #06b6d4); }
+.score-medium .score-number { color: var(--accent); }
+.score-medium .score-bar-fill { background: linear-gradient(90deg, #f59e0b, #f97316); }
+.score-low .score-number { color: var(--danger); }
+.score-low .score-bar-fill { background: linear-gradient(90deg, #ef4444, #f59e0b); }
+.score-explication { font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ===== HASHTAGS ===== */
+.hashtag-groups { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.75rem; }
+.hashtag-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.hashtag-group-label { font-size: 0.74rem; font-weight: 700; color: var(--text-dim); }
+.hashtag-pills { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.hashtag-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--primary-light);
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: inherit;
+}
+.hashtag-pill:hover {
+  background: rgba(124,58,237,0.15);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .app-layout { grid-template-columns: 1fr; }
