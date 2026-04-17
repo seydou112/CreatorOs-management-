@@ -217,6 +217,135 @@ function removePageGuard() {
 window.showPageGuard = showPageGuard;
 window.removePageGuard = removePageGuard;
 
+// ===== MONEROO — paiement mobile money =====
+window.openPremiumModal = function() {
+  const existing = document.getElementById('premiumModal');
+  if (existing) { existing.classList.add('open'); return; }
+
+  const el = document.createElement('div');
+  el.id = 'premiumModal';
+  el.className = 'modal-overlay';
+  el.innerHTML = `
+    <div class="modal premium-modal">
+      <button class="modal-close-btn" onclick="document.getElementById('premiumModal').classList.remove('open')">✕</button>
+      <div class="modal-emoji">⚡</div>
+      <h3>Passer Premium</h3>
+      <p>Générations illimitées, toutes les fonctionnalités débloquées.</p>
+
+      <div class="premium-plans">
+        <button class="premium-plan active" data-plan="monthly">
+          <span class="plan-label">Mensuel</span>
+          <span class="plan-price" id="planPriceMonthly">Chargement...</span>
+          <span class="plan-detail">Renouvelable chaque mois</span>
+        </button>
+        <button class="premium-plan" data-plan="annual">
+          <span class="plan-badge">Économie 25%</span>
+          <span class="plan-label">Annuel</span>
+          <span class="plan-price" id="planPriceAnnual">Chargement...</span>
+          <span class="plan-detail">Payé en une fois</span>
+        </button>
+      </div>
+
+      <div class="premium-methods">
+        <p class="methods-label">Choisissez votre moyen de paiement</p>
+        <div class="methods-grid">
+          <button class="method-btn method-moneroo" id="payMonerooBtn" onclick="startMonerooPayment()">
+            <span class="method-icon">📱</span>
+            <span>Mobile Money</span>
+            <span class="method-sub">Orange · MTN · Wave · Airtel</span>
+          </button>
+          <button class="method-btn method-stripe" id="payStripeBtn" onclick="startStripePayment()">
+            <span class="method-icon">💳</span>
+            <span>Carte bancaire</span>
+            <span class="method-sub">Visa · Mastercard</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="premiumPayError" class="auth-error" style="text-align:center;margin-top:0.5rem"></div>
+    </div>`;
+  document.body.appendChild(el);
+
+  // Sélection du plan
+  el.querySelectorAll('.premium-plan').forEach(btn => {
+    btn.addEventListener('click', () => {
+      el.querySelectorAll('.premium-plan').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Charger les prix depuis le serveur
+  fetch('/api/moneroo/prices').then(r => r.json()).then(data => {
+    const mEl = document.getElementById('planPriceMonthly');
+    const aEl = document.getElementById('planPriceAnnual');
+    if (mEl) mEl.textContent = data.monthly || '2 000 XOF / mois';
+    if (aEl) aEl.textContent = data.annual || '18 000 XOF / an';
+  }).catch(() => {
+    const mEl = document.getElementById('planPriceMonthly');
+    const aEl = document.getElementById('planPriceAnnual');
+    if (mEl) mEl.textContent = '2 000 XOF / mois';
+    if (aEl) aEl.textContent = '18 000 XOF / an';
+  });
+
+  el.classList.add('open');
+};
+
+window.startMonerooPayment = async function() {
+  const auth = getAuth();
+  if (!auth?.token) { openAuthModal('login'); return; }
+
+  const plan = document.querySelector('.premium-plan.active')?.dataset.plan || 'monthly';
+  const btn = document.getElementById('payMonerooBtn');
+  const errEl = document.getElementById('premiumPayError');
+  if (errEl) errEl.textContent = '';
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="method-icon">⏳</span><span>Redirection...</span><span class="method-sub"></span>';
+
+  try {
+    const res = await fetch('/api/moneroo/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth.token}` },
+      body: JSON.stringify({ plan })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erreur paiement.');
+    window.location.href = data.url;
+  } catch (err) {
+    if (errEl) errEl.textContent = err.message;
+    btn.disabled = false;
+    btn.innerHTML = '<span class="method-icon">📱</span><span>Mobile Money</span><span class="method-sub">Orange · MTN · Wave · Airtel</span>';
+  }
+};
+
+window.startStripePayment = async function() {
+  const auth = getAuth();
+  if (!auth?.token) { openAuthModal('login'); return; }
+
+  const plan = document.querySelector('.premium-plan.active')?.dataset.plan || 'monthly';
+  const btn = document.getElementById('payStripeBtn');
+  const errEl = document.getElementById('premiumPayError');
+  if (errEl) errEl.textContent = '';
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="method-icon">⏳</span><span>Redirection...</span><span class="method-sub"></span>';
+
+  try {
+    const res = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${auth.token}` },
+      body: JSON.stringify({ plan })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erreur paiement.');
+    window.location.href = data.url;
+  } catch (err) {
+    if (errEl) errEl.textContent = err.message;
+    btn.disabled = false;
+    btn.innerHTML = '<span class="method-icon">💳</span><span>Carte bancaire</span><span class="method-sub">Visa · Mastercard</span>';
+  }
+};
+
 // ===== STRIPE — succès paiement =====
 function checkPremiumSuccess() {
   const params = new URLSearchParams(window.location.search);

@@ -8,6 +8,7 @@ import blogRouter from './routes/blog.js';
 import analyzeRouter from './routes/analyze.js';
 import authRouter from './routes/auth.js';
 import stripeRouter, { stripeWebhookHandler } from './routes/stripe.js';
+import monerooRouter from './routes/moneroo.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -32,6 +33,7 @@ app.use(express.static(join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
 app.use('/api/stripe', stripeRouter);
+app.use('/api/moneroo', monerooRouter);
 app.use('/api/generate', generateRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/analyze', analyzeRouter);

@@ -332,8 +332,8 @@
     <h3>Limite journalière atteinte</h3>
     <p>Vous avez utilisé vos 3 générations gratuites d'aujourd'hui. Passez en Premium pour des générations illimitées.</p>
     <div class="modal-actions">
-      <button class="btn btn-primary" onclick="document.getElementById('limitModal').classList.remove('open')">
-        Passer Premium
+      <button class="btn btn-primary" onclick="document.getElementById('limitModal').classList.remove('open'); openPremiumModal();">
+        Voir les offres Premium
       </button>
       <button class="btn btn-secondary" onclick="document.getElementById('limitModal').classList.remove('open')">
         Plus tard
