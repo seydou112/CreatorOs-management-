@@ -1,9 +1,14 @@
 import pool from '../data/db.js';
 
 export async function rateLimit(req, res, next) {
-  try {
-    if (!pool) return res.status(503).json({ error: 'Base de données non configurée.' });
+  // Sans base de données : accès libre (mode test)
+  if (!pool) {
+    res.setHeader('X-Remaining-Generations', 'unlimited');
+    req.commitUsage = async () => {};
+    return next();
+  }
 
+  try {
     const today = new Date().toISOString().split('T')[0];
     const result = await pool.query(
       'SELECT is_premium, daily_count, daily_reset FROM users WHERE id = $1',
@@ -14,7 +19,12 @@ export async function rateLimit(req, res, next) {
 
     if (user.is_premium) {
       res.setHeader('X-Remaining-Generations', 'unlimited');
-      req.commitUsage = async () => {};
+      req.commitUsage = async () => {
+        await pool.query(
+          'UPDATE users SET total_generations = COALESCE(total_generations,0) + 1 WHERE id = $1',
+          [req.userId]
+        );
+      };
       return next();
     }
 
@@ -33,7 +43,10 @@ export async function rateLimit(req, res, next) {
 
     req.commitUsage = async () => {
       await pool.query(
-        'UPDATE users SET daily_count = $1, daily_reset = $2 WHERE id = $3',
+        `UPDATE users
+         SET daily_count = $1, daily_reset = $2,
+             total_generations = COALESCE(total_generations,0) + 1
+         WHERE id = $3`,
         [count + 1, today, req.userId]
       );
     };
