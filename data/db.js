@@ -20,14 +20,13 @@ if (process.env.DATABASE_URL) {
       premium_until TIMESTAMP,
       daily_count INTEGER DEFAULT 0,
       daily_reset DATE DEFAULT CURRENT_DATE,
+      total_generations INTEGER DEFAULT 0,
       created_at TIMESTAMP DEFAULT NOW()
     )
   `).catch(err => console.error('Erreur init DB:', err.message));
 
-  // Migration : ajouter moneroo_payment_id si la table existe déjà
-  pool.query(`
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS moneroo_payment_id VARCHAR(255)
-  `).catch(() => {});
+  pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS moneroo_payment_id VARCHAR(255)`).catch(() => {});
+  pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS total_generations INTEGER DEFAULT 0`).catch(() => {});
 }
 
 export default pool;
