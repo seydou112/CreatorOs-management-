@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/authMiddleware.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import {
   SYSTEM_PROMPT_TRENDS,
@@ -24,7 +23,6 @@ function parseJson(text) {
   }
 }
 
-// Modèle avec accès Google Search (grounding)
 function getTrendsModel() {
   const client = getClient();
   return client.getGenerativeModel({
@@ -36,7 +34,7 @@ function getTrendsModel() {
 }
 
 // ===== TENDANCES EN TEMPS RÉEL =====
-router.post('/search', requireAuth, async (req, res, next) => {
+router.post('/search', async (req, res, next) => {
   try {
     const { sujet, plateforme = 'tiktok' } = req.body;
     if (!sujet?.trim()) return res.status(400).json({ error: 'Sujet requis.' });
@@ -54,7 +52,7 @@ router.post('/search', requireAuth, async (req, res, next) => {
 });
 
 // ===== ANALYSE CONCURRENT =====
-router.post('/competitor', requireAuth, async (req, res, next) => {
+router.post('/competitor', async (req, res, next) => {
   try {
     const { concurrent, plateforme = 'tiktok' } = req.body;
     if (!concurrent?.trim()) return res.status(400).json({ error: 'Concurrent requis.' });

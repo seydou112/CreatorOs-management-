@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/authMiddleware.js';
 import pool from '../data/db.js';
 import bcrypt from 'bcryptjs';
 
 const router = Router();
 
 // ===== PROFIL COMPLET =====
-router.get('/profile', requireAuth, async (req, res, next) => {
+router.get('/profile', async (req, res, next) => {
   try {
     if (!pool) return res.status(503).json({ error: 'Base de données non configurée.' });
 
@@ -40,7 +39,7 @@ router.get('/profile', requireAuth, async (req, res, next) => {
 });
 
 // ===== CHANGER MOT DE PASSE =====
-router.post('/change-password', requireAuth, async (req, res, next) => {
+router.post('/change-password', async (req, res, next) => {
   try {
     if (!pool) return res.status(503).json({ error: 'Base de données non configurée.' });
 

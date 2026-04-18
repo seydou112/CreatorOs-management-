@@ -6,9 +6,6 @@ import { dirname, join } from 'path';
 import generateRouter from './routes/generate.js';
 import blogRouter from './routes/blog.js';
 import analyzeRouter from './routes/analyze.js';
-import authRouter from './routes/auth.js';
-import stripeRouter, { stripeWebhookHandler } from './routes/stripe.js';
-import monerooRouter from './routes/moneroo.js';
 import userRouter from './routes/user.js';
 import trendsRouter from './routes/trends.js';
 
@@ -18,7 +15,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-// En-tête Service-Worker-Allowed pour les PWA
 app.use((req, res, next) => {
   if (req.path === '/sw.js') {
     res.setHeader('Service-Worker-Allowed', '/');
@@ -27,22 +23,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Webhook Stripe doit recevoir le body brut — AVANT express.json()
-app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhookHandler);
-
 app.use(express.json());
 app.use(express.static(join(__dirname, 'public')));
 
-app.use('/api/auth', authRouter);
-app.use('/api/stripe', stripeRouter);
-app.use('/api/moneroo', monerooRouter);
 app.use('/api/user', userRouter);
 app.use('/api/trends', trendsRouter);
 app.use('/api/generate', generateRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/analyze', analyzeRouter);
 
-// Widget data endpoint (PWA Widgets — Windows 11)
 app.get('/api/widget/data', (req, res) => {
   const tips = [
     'Un hook percutant capte l\'attention en moins de 2 secondes.',
