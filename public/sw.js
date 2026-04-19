@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viral-v5';
+const CACHE_NAME = 'viral-v6';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -7,6 +7,8 @@ const STATIC_ASSETS = [
   '/blog-post.html',
   '/analyze.html',
   '/library.html',
+  '/trends.html',
+  '/dashboard.html',
   '/manifest.json',
   '/css/style.css',
   '/css/home.css',
@@ -15,6 +17,8 @@ const STATIC_ASSETS = [
   '/css/analyze.css',
   '/css/auth.css',
   '/css/library.css',
+  '/css/trends.css',
+  '/css/dashboard.css',
   '/js/home.js',
   '/js/app.js',
   '/js/blog.js',
@@ -22,12 +26,11 @@ const STATIC_ASSETS = [
   '/js/auth.js',
   '/js/pwa.js',
   '/js/library.js',
+  '/js/trends.js',
+  '/js/dashboard.js',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  '/icons/icon-maskable-512.png',
-  '/widgets/generator-widget.json',
-  '/screenshots/desktop.png',
-  '/screenshots/mobile.png'
+  '/icons/icon-maskable-512.png'
 ];
 
 // ===== INSTALLATION =====
