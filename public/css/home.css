@@ -349,7 +349,7 @@
 .check { color: var(--success); font-weight: 700; }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .hero { flex-direction: column; text-align: center; gap: 2.5rem; }
   .hero-content { max-width: 100%; }
   .hero-actions { justify-content: center; }
@@ -360,4 +360,5 @@
   .features-grid, .modes-grid { grid-template-columns: 1fr; }
   .pricing-grid { grid-template-columns: 1fr; }
   .pricing-featured { transform: none; }
+  .hero { padding: 6rem 1.25rem 3rem; }
 }
