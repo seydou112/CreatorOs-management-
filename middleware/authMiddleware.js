@@ -1,10 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  console.warn('[auth] JWT_SECRET non défini — utilisation du secret de développement.');
-}
-const SECRET = JWT_SECRET || 'dev-secret-change-en-production';
+const SECRET = 'viral-app-secret-2026';
 
 export function requireAuth(req, res, next) {
   const authHeader = req.headers['authorization'];

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import pool from '../data/db.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-en-production';
+const JWT_SECRET = 'viral-app-secret-2026';
 
 // Brute-force protection simple en mémoire
 const loginAttempts = new Map();
