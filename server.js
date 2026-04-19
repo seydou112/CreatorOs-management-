@@ -79,10 +79,8 @@ app.get('*', (req, res) => {
 
 app.use((err, req, res, _next) => {
   const status = err.status || 500;
-  const message = process.env.NODE_ENV === 'production'
-    ? 'Une erreur est survenue. Veuillez réessayer.'
-    : err.message;
-  res.status(status).json({ error: message });
+  console.error(`[${status}] ${req.method} ${req.path} —`, err.message);
+  res.status(status).json({ error: err.message || 'Une erreur est survenue.' });
 });
 
 app.listen(PORT, () => {

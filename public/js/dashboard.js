@@ -2,8 +2,9 @@
 
 async function loadProfile() {
   const token = window.getToken?.();
+
   if (!token) {
-    window.location.href = '/';
+    renderLocalProfile();
     return;
   }
 
@@ -11,24 +12,49 @@ async function loadProfile() {
     const res = await fetch('/api/user/profile', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    if (!res.ok) { window.location.href = '/'; return; }
+    if (!res.ok) { renderLocalProfile(); return; }
     const data = await res.json();
     renderProfile(data);
   } catch {
-    showToast('Erreur de chargement du profil.', 'error');
+    renderLocalProfile();
   }
 }
 
+// Vue locale — pas de connexion ni de base de données nécessaire
+function renderLocalProfile() {
+  const history = JSON.parse(localStorage.getItem('viral_historique') || '[]');
+  const usage = JSON.parse(localStorage.getItem('viral_usage') || '{}');
+  const today = new Date().toISOString().split('T')[0];
+  const remaining = usage.date === today ? (usage.remaining ?? 3) : 3;
+  const usedToday = Math.max(0, 3 - remaining);
+
+  const avatar = document.getElementById('dashAvatar');
+  if (avatar) avatar.textContent = '?';
+
+  const emailEl = document.getElementById('dashEmail');
+  if (emailEl) emailEl.textContent = 'Mon espace';
+
+  const badges = document.getElementById('dashBadges');
+  if (badges) badges.innerHTML = '<span class="badge-free">Plan Gratuit</span>';
+
+  const upgradeBtn = document.getElementById('upgradeBtnHeader');
+  if (upgradeBtn) upgradeBtn.style.display = 'inline-flex';
+
+  setText('statUsed', usedToday);
+  setText('statRemaining', remaining);
+  setText('statTotal', history.length);
+  setText('statMember', '—');
+
+  renderPremiumStatus({ isPremium: false });
+}
+
 function renderProfile(data) {
-  // Avatar
   const avatar = document.getElementById('dashAvatar');
   if (avatar) avatar.textContent = (data.email || '?')[0].toUpperCase();
 
-  // Email
   const emailEl = document.getElementById('dashEmail');
   if (emailEl) emailEl.textContent = data.email || '—';
 
-  // Badges
   const badges = document.getElementById('dashBadges');
   if (badges) {
     badges.innerHTML = data.isPremium
@@ -36,18 +62,14 @@ function renderProfile(data) {
       : '<span class="badge-free">Gratuit</span>';
   }
 
-  // Bouton upgrade
   const upgradeBtn = document.getElementById('upgradeBtnHeader');
   if (upgradeBtn) upgradeBtn.style.display = data.isPremium ? 'none' : 'inline-flex';
 
-  // Stats
-  const limit = parseInt(window.__FREE_LIMIT__ || '3');
   setText('statUsed', data.usedToday ?? '—');
   setText('statRemaining', data.isPremium ? '∞' : (data.remainingToday ?? '—'));
   setText('statTotal', data.totalGenerations ?? '—');
   setText('statMember', data.memberSince ? formatDate(data.memberSince) : '—');
 
-  // Abonnement
   renderPremiumStatus(data);
 }
 
@@ -56,7 +78,9 @@ function renderPremiumStatus(data) {
   if (!el) return;
 
   if (data.isPremium) {
-    const until = data.premiumUntil ? new Date(data.premiumUntil).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+    const until = data.premiumUntil
+      ? new Date(data.premiumUntil).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+      : null;
     el.innerHTML = `
       <div class="premium-active">
         <div class="premium-active-icon">✦</div>
@@ -69,7 +93,7 @@ function renderPremiumStatus(data) {
     el.innerHTML = `
       <div class="premium-free">
         <p>Vous êtes sur le plan <strong>Gratuit</strong></p>
-        <p class="hint">3 générations par jour. Passez Premium pour des générations illimitées.</p>
+        <p class="hint">3 générations par jour. Passez Premium pour en créer autant que vous voulez.</p>
         <button class="btn btn-primary" style="margin-top:1rem; width:100%" onclick="openPremiumModal()">
           ⚡ Passer Premium
         </button>
@@ -81,6 +105,8 @@ function renderPremiumStatus(data) {
 async function changePassword(e) {
   e.preventDefault();
   const token = window.getToken?.();
+  if (!token) { showToast('Connectez-vous pour changer votre mot de passe.', 'error'); return; }
+
   const errEl = document.getElementById('pwdError');
   const btn = document.getElementById('pwdBtn');
   const current = document.getElementById('currentPwd').value;
@@ -121,24 +147,24 @@ function loadHistory() {
 
   const history = JSON.parse(localStorage.getItem('viral_historique') || '[]');
   if (!history.length) {
-    container.innerHTML = '<div class="history-empty">Aucune génération pour l\'instant.<br>Utilisez le générateur pour créer du contenu.</div>';
+    container.innerHTML = '<div class="history-empty">Aucune génération pour l\'instant.<br>Utilisez le générateur pour créer votre premier contenu.</div>';
     return;
   }
 
   container.innerHTML = `<div class="history-list">${history.slice(0, 10).map(item => `
-    <div class="history-item" onclick="goToGenerator(${encodeHistoryItem(item)})">
+    <div class="history-item" onclick="goToGenerator('${encodeHistoryItem(item)}')">
       <div class="history-meta">
-        <span class="history-platform">${escHtml(item.plateforme || 'unknown')}</span>
-        <span class="history-date">${item.date ? new Date(item.date).toLocaleDateString('fr-FR') : ''}</span>
+        <span class="history-platform">${escHtml(item.plateforme || '')}</span>
+        <span class="history-date">${item.date || ''}</span>
       </div>
-      <div class="history-hook">${escHtml(item.hook || '(sans titre)')}</div>
+      <div class="history-hook">${escHtml(item.hook || item.theme || '(sans titre)')}</div>
       <div class="history-theme">${escHtml(item.theme || '')}</div>
     </div>`).join('')}
   </div>`;
 }
 
 function encodeHistoryItem(item) {
-  return `'${btoa(encodeURIComponent(JSON.stringify(item)))}'`;
+  return btoa(encodeURIComponent(JSON.stringify(item)));
 }
 
 function goToGenerator(encoded) {
@@ -160,7 +186,7 @@ function formatDate(iso) {
 }
 
 function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function showToast(msg, type = 'info') {
