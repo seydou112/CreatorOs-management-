@@ -16,7 +16,20 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// CORS : autoriser les origines déclarées + requêtes same-origin (pas d'origin header)
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(o => o.trim());
+
+app.use(cors({
+  origin: (origin, cb) => {
+    // Requête same-origin ou sans origin (mobile apps, curl, etc.) : autorisé
+    if (!origin) return cb(null, true);
+    // Si ALLOWED_ORIGINS est défini, vérifier la liste
+    if (allowedOrigins?.length) return cb(null, allowedOrigins.includes(origin));
+    // Sinon autoriser (mode dev / premier déploiement)
+    cb(null, true);
+  },
+  credentials: true
+}));
 
 app.use((req, res, next) => {
   if (req.path === '/sw.js') {

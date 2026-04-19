@@ -1,3 +1,8 @@
+// ===== UTILS =====
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 // ===== NAV =====
 const navbar = document.getElementById('navbar');
 const navToggle = document.getElementById('navToggle');
@@ -158,20 +163,20 @@ function displayResults(data) {
   // Forces
   const strengthsCard = document.getElementById('strengthsCard');
   const strengthsList = document.getElementById('strengthsList');
-  strengthsList.innerHTML = (data.points_forts || []).map(p => `<li>${p}</li>`).join('');
+  strengthsList.innerHTML = (data.points_forts || []).map(p => `<li>${escHtml(p)}</li>`).join('');
   setTimeout(() => strengthsCard.classList.add('visible'), 300);
 
   // Faiblesses
   const weaknessesCard = document.getElementById('weaknessesCard');
   const weaknessesList = document.getElementById('weaknessesList');
-  weaknessesList.innerHTML = (data.points_faibles || []).map(p => `<li>${p}</li>`).join('');
+  weaknessesList.innerHTML = (data.points_faibles || []).map(p => `<li>${escHtml(p)}</li>`).join('');
   setTimeout(() => weaknessesCard.classList.add('visible'), 450);
 
   // Recommandations
   const recoCard = document.getElementById('recoCard');
   const recoList = document.getElementById('recoList');
   recoList.innerHTML = (data.recommandations || []).map((r, i) =>
-    `<li class="reco-item" id="recoItem${i}"><span class="reco-num">${i + 1}</span><span>${r}</span></li>`
+    `<li class="reco-item" id="recoItem${i}"><span class="reco-num">${i + 1}</span><span>${escHtml(r)}</span></li>`
   ).join('');
   setTimeout(() => {
     recoCard.classList.add('visible');

@@ -4,7 +4,18 @@ import jwt from 'jsonwebtoken';
 import pool from '../data/db.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-en-production';
+
+// Brute-force protection simple en mémoire
+const loginAttempts = new Map();
+function checkBruteForce(ip) {
+  const now = Date.now();
+  const entry = loginAttempts.get(ip) || { count: 0, resetAt: now + 15 * 60 * 1000 };
+  if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + 15 * 60 * 1000; }
+  entry.count++;
+  loginAttempts.set(ip, entry);
+  return entry.count > 10;
+}
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -29,6 +40,10 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    if (checkBruteForce(ip)) {
+      return res.status(429).json({ error: 'Trop de tentatives. Réessayez dans 15 minutes.' });
+    }
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis.' });
     if (!pool) return res.status(503).json({ error: 'Base de données non configurée.' });

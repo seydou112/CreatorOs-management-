@@ -349,9 +349,14 @@ function showHashtagsCard(hashtags) {
   ['tendance', 'niche', 'volume'].forEach(g => {
     const el = document.getElementById('hashtags' + g.charAt(0).toUpperCase() + g.slice(1));
     if (!el || !hashtags[g]) return;
-    el.innerHTML = (hashtags[g] || []).map(tag =>
-      `<button class="hashtag-pill" onclick="copyTag('${tag}')">${tag}</button>`
-    ).join('');
+    el.innerHTML = '';
+    (hashtags[g] || []).forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'hashtag-pill';
+      btn.textContent = tag;
+      btn.addEventListener('click', () => copyTag(tag));
+      el.appendChild(btn);
+    });
   });
   setTimeout(() => card.classList.add('visible'), 950);
 }
@@ -441,12 +446,13 @@ function renderHistory() {
   history.forEach(item => {
     const div = document.createElement('div');
     div.className = 'history-item';
+    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     div.innerHTML = `
       <div class="history-meta">
-        <span class="history-platform">${item.plateforme || ''}</span>
-        <span>${item.date || ''}</span>
+        <span class="history-platform">${esc(item.plateforme)}</span>
+        <span>${esc(item.date)}</span>
       </div>
-      <div class="history-hook">${item.hook || item.theme || ''}</div>
+      <div class="history-hook">${esc(item.hook || item.theme)}</div>
     `;
     div.addEventListener('click', () => {
       displayResults(item);
