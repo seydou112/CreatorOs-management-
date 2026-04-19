@@ -2,6 +2,7 @@
   "name": "viral-app",
   "version": "1.0.0",
   "description": "Générateur de contenu viral pour les réseaux sociaux",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "start": "node server.js",
