@@ -127,9 +127,7 @@ async function callGenerateAPI(body) {
     });
 
     if (res.status === 401) {
-      window._authPendingAction = () => form.dispatchEvent(new Event('submit'));
-      window.openAuthModal?.('login');
-      throw new Error('auth');
+      throw new Error('Connexion requise.');
     }
 
     const remaining = res.headers.get('X-Remaining-Generations');
@@ -229,12 +227,6 @@ form?.addEventListener('submit', async (e) => {
     return;
   }
   document.getElementById('themeError').textContent = '';
-
-  if (!window.getToken?.()) {
-    window._authPendingAction = () => form.dispatchEvent(new Event('submit'));
-    window.openAuthModal?.('login');
-    return;
-  }
 
   if (!navigator.onLine) {
     showToast('Vous êtes hors ligne — génération impossible.', 'error');
