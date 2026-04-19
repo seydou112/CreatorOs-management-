@@ -72,13 +72,19 @@ const dureeMap = {
   'long': "Long format (2-3 minutes) — narration riche, storytelling complet, développement approfondi"
 };
 
-export function buildUserPrompt({ theme, cible, objectif, plateforme, mode, ton, duree }) {
+export function buildUserPrompt({ theme, cible, objectif, plateforme, mode, ton, duree, profile }) {
   let prompt = `Crée du contenu viral sur le sujet : "${theme}"
 
 Public cible : ${audienceMap[cible]}
 Objectif : ${objectifMap[objectif]}
 Plateforme : ${plateformeMap[plateforme]}
 Langue : Français`;
+
+  if (profile) {
+    if (profile.niche) prompt += `\nNiche du créateur : ${profile.niche}`;
+    if (profile.audience) prompt += `\nAudience spécifique du créateur : ${profile.audience}`;
+    if (profile.tone) prompt += `\nPersonnalité de marque du créateur : ${profile.tone}`;
+  }
 
   if (ton && tonMap[ton]) prompt += `\nTon souhaité : ${tonMap[ton]}`;
   if (duree && dureeMap[duree]) prompt += `\nDurée cible : ${dureeMap[duree]}`;

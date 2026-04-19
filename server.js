@@ -11,6 +11,7 @@ import stripeRouter, { stripeWebhookHandler } from './routes/stripe.js';
 import monerooRouter from './routes/moneroo.js';
 import userRouter from './routes/user.js';
 import trendsRouter from './routes/trends.js';
+import profileRouter from './routes/profile.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -49,6 +50,7 @@ app.use('/api/stripe', stripeRouter);
 app.use('/api/moneroo', monerooRouter);
 app.use('/api/user', userRouter);
 app.use('/api/trends', trendsRouter);
+app.use('/api/profile', profileRouter);
 app.use('/api/generate', generateRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/analyze', analyzeRouter);
