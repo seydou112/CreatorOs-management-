@@ -68,12 +68,6 @@ document.getElementById('analyzeForm')?.addEventListener('submit', async (e) => 
   if (description.length < 10) { showToast('La description est trop courte.', 'error'); return; }
   if (!typeContenu) { showToast('Indiquez le type de contenu publié.', 'error'); return; }
 
-  if (!window.getToken?.()) {
-    window._authPendingAction = () => document.getElementById('analyzeForm').dispatchEvent(new Event('submit'));
-    window.openAuthModal?.('login');
-    return;
-  }
-
   if (!navigator.onLine) { showToast('Vous êtes hors ligne — analyse impossible.', 'error'); return; }
 
   setLoading(true);
@@ -101,21 +95,10 @@ document.getElementById('analyzeForm')?.addEventListener('submit', async (e) => 
   try {
     const res = await fetch('/api/analyze', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${window.getToken?.() || ''}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       signal: controller.signal
     });
-
-    if (res.status === 401) {
-      scanOverlay.style.display = 'none';
-      document.getElementById('analyzePlaceholder').style.display = 'flex';
-      window._authPendingAction = () => document.getElementById('analyzeForm').dispatchEvent(new Event('submit'));
-      window.openAuthModal?.('login');
-      return;
-    }
 
     const data = await res.json();
     if (!res.ok) { showToast(data.error || 'Erreur lors de l\'analyse.', 'error'); return; }

@@ -10,9 +10,6 @@ function switchTab(tab) {
 // ===== RECHERCHE TENDANCES =====
 async function searchTrends(e) {
   e.preventDefault();
-  const token = window.getToken?.();
-  if (!token) { openAuthModal?.('login'); return; }
-
   const sujet = document.getElementById('trendsSubject').value.trim();
   const plateforme = document.getElementById('trendsPlatform').value;
   const btn = document.getElementById('trendsBtn');
@@ -29,7 +26,7 @@ async function searchTrends(e) {
   try {
     const res = await fetch('/api/trends/search', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sujet, plateforme })
     });
     const data = await res.json();
@@ -89,9 +86,6 @@ function renderTrendsResult(d, sujet, plateforme) {
 // ===== ANALYSE CONCURRENT =====
 async function analyzeCompetitor(e) {
   e.preventDefault();
-  const token = window.getToken?.();
-  if (!token) { openAuthModal?.('login'); return; }
-
   const concurrent = document.getElementById('competitorName').value.trim();
   const plateforme = document.getElementById('competitorPlatform').value;
   const btn = document.getElementById('competitorBtn');
@@ -108,7 +102,7 @@ async function analyzeCompetitor(e) {
   try {
     const res = await fetch('/api/trends/competitor', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ concurrent, plateforme })
     });
     const data = await res.json();
