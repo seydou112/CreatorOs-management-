@@ -1,13 +1,63 @@
 import pool from '../data/db.js';
 
+// Limite par IP pour les utilisateurs non connectés (en mémoire)
+const ipUsage = new Map();
+
+function getIpCount(ip) {
+  const today = new Date().toISOString().split('T')[0];
+  const key = `${ip}:${today}`;
+  const count = ipUsage.get(key) || 0;
+  return { key, count, today };
+}
+
+function incrementIp(key) {
+  const prev = ipUsage.get(key) || 0;
+  ipUsage.set(key, prev + 1);
+  // Nettoyage si trop grande
+  if (ipUsage.size > 5000) {
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    for (const [k] of ipUsage) {
+      if (k.endsWith(yesterday)) ipUsage.delete(k);
+    }
+  }
+}
+
 export async function rateLimit(req, res, next) {
-  // Sans base de données : accès libre (mode test)
+  const limit = parseInt(process.env.FREE_DAILY_LIMIT || '3');
+
+  // ── Sans base de données : limite par IP en mémoire ──────────────────
   if (!pool) {
-    res.setHeader('X-Remaining-Generations', 'unlimited');
-    req.commitUsage = async () => {};
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || 'unknown';
+    const { key, count } = getIpCount(ip);
+
+    if (count >= limit) {
+      return res.status(429).json({
+        error: 'Limite journalière atteinte. Passez en Premium pour des générations illimitées.',
+        remaining: 0
+      });
+    }
+    res.setHeader('X-Remaining-Generations', String(limit - count - 1));
+    req.commitUsage = async () => incrementIp(key);
     return next();
   }
 
+  // ── Utilisateur non connecté : limite par IP en mémoire ──────────────
+  if (!req.userId) {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || 'unknown';
+    const { key, count } = getIpCount(ip);
+
+    if (count >= limit) {
+      return res.status(429).json({
+        error: 'Limite journalière atteinte. Passez en Premium pour des générations illimitées.',
+        remaining: 0
+      });
+    }
+    res.setHeader('X-Remaining-Generations', String(limit - count - 1));
+    req.commitUsage = async () => incrementIp(key);
+    return next();
+  }
+
+  // ── Utilisateur connecté : vérification en base de données ───────────
   try {
     const today = new Date().toISOString().split('T')[0];
     const result = await pool.query(
@@ -15,7 +65,13 @@ export async function rateLimit(req, res, next) {
       [req.userId]
     );
     const user = result.rows[0];
-    if (!user) return res.status(401).json({ error: 'Utilisateur introuvable.' });
+
+    // Utilisateur introuvable en DB → on le laisse passer librement
+    if (!user) {
+      res.setHeader('X-Remaining-Generations', String(limit));
+      req.commitUsage = async () => {};
+      return next();
+    }
 
     if (user.is_premium) {
       res.setHeader('X-Remaining-Generations', 'unlimited');
@@ -28,7 +84,6 @@ export async function rateLimit(req, res, next) {
       return next();
     }
 
-    const limit = parseInt(process.env.FREE_DAILY_LIMIT || '3');
     const userReset = user.daily_reset ? new Date(user.daily_reset).toISOString().split('T')[0] : null;
     const count = userReset === today ? (user.daily_count || 0) : 0;
 
@@ -40,19 +95,20 @@ export async function rateLimit(req, res, next) {
     }
 
     res.setHeader('X-Remaining-Generations', String(limit - count - 1));
-
     req.commitUsage = async () => {
       await pool.query(
-        `UPDATE users
-         SET daily_count = $1, daily_reset = $2,
+        `UPDATE users SET daily_count = $1, daily_reset = $2,
              total_generations = COALESCE(total_generations,0) + 1
          WHERE id = $3`,
         [count + 1, today, req.userId]
       );
     };
-
     next();
   } catch (err) {
-    next(err);
+    // Erreur DB → on laisse passer plutôt que de bloquer l'utilisateur
+    console.warn('rateLimit DB error:', err.message);
+    res.setHeader('X-Remaining-Generations', String(limit));
+    req.commitUsage = async () => {};
+    next();
   }
 }
