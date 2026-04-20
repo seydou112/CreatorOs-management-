@@ -370,8 +370,17 @@ a { color: inherit; text-decoration: none; }
   66% { transform: translateY(10px) rotate(-1deg); }
 }
 
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal {
+  opacity: 0;
+  transform: perspective(1200px) rotateX(-14deg) translateY(48px) scale(0.96);
+  transform-origin: 50% 100%;
+  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform, opacity;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: perspective(1200px) rotateX(0deg) translateY(0) scale(1);
+}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1100px) {
