@@ -66,7 +66,7 @@
   "actions": [
     {
       "type": "Action.OpenUrl",
-      "title": "✦ Générer",
+      "title": "✦Générer",
       "url": "/app.html?source=widget"
     },
     {
