@@ -2,7 +2,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { SYSTEM_PROMPT_GENERATION } from '../utils/promptBuilder.js';
 import { SYSTEM_PROMPT_ANALYZE } from '../utils/analyzeBuilder.js';
 
-const client = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+function getClient() {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error('GEMINI_API_KEY non configurée — ajoutez-la dans vos variables d\'environnement Render.');
+  return new GoogleGenerativeAI(key);
+}
 
 function parseJson(text) {
   let cleaned = text.trim();
@@ -18,7 +22,7 @@ function parseJson(text) {
 }
 
 export async function generateContent(userPrompt) {
-  const model = client.getGenerativeModel({
+  const model = getClient().getGenerativeModel({
     model: 'gemini-2.0-flash',
     systemInstruction: SYSTEM_PROMPT_GENERATION,
     generationConfig: { maxOutputTokens: 2048, temperature: 0.9 }
@@ -39,7 +43,7 @@ export async function generateContent(userPrompt) {
 }
 
 export async function analyzeAccount(userPrompt) {
-  const model = client.getGenerativeModel({
+  const model = getClient().getGenerativeModel({
     model: 'gemini-2.0-flash',
     systemInstruction: SYSTEM_PROMPT_ANALYZE,
     generationConfig: { maxOutputTokens: 1536, temperature: 0.7 }
