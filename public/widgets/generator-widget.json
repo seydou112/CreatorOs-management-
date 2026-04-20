@@ -66,12 +66,12 @@
   "actions": [
     {
       "type": "Action.OpenUrl",
-      "title": "✦ Générer du contenu",
+      "title": "✦ Générer",
       "url": "/app.html?source=widget"
     },
     {
       "type": "Action.OpenUrl",
-      "title": "📚 Ma bibliothèque",
+      "title": "📚 bibliothèque",
       "url": "/library.html?source=widget"
     }
   ]
