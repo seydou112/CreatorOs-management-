@@ -3,7 +3,7 @@ import { SYSTEM_PROMPT_GENERATION } from '../utils/promptBuilder.js';
 import { SYSTEM_PROMPT_ANALYZE } from '../utils/analyzeBuilder.js';
 
 function getClient() {
-  const key = process.env.GEMINI_API_KEY;
+  const key = (process.env.GEMINI_API_KEY || '').trim();
   if (!key) throw new Error('GEMINI_API_KEY non configurée — ajoutez-la dans vos variables d\'environnement Render.');
   return new GoogleGenerativeAI(key);
 }

@@ -85,9 +85,10 @@ app.use((err, req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Viral — serveur démarré sur le port ${PORT}`);
-  if (!process.env.GEMINI_API_KEY) {
-    console.error('⛔ GEMINI_API_KEY manquante — la génération et l\'analyse IA ne fonctionneront pas.');
+  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
+  if (!geminiKey) {
+    console.error('⛔ GEMINI_API_KEY manquante — la génération IA ne fonctionnera pas.');
   } else {
-    console.log('✓ GEMINI_API_KEY chargée');
+    console.log(`✓ GEMINI_API_KEY chargée (longueur: ${geminiKey.length}, début: ${geminiKey.slice(0, 6)}...)`);
   }
 });
