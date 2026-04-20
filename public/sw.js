@@ -51,11 +51,11 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
-// ===== FETCH — stratégie hybride =====
+// ===== FETCH — Network First pour tout sauf images =====
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
 
-  // API : Network First — réponse hors ligne générique si pas de réseau
+  // API : Network First — erreur hors ligne générique
   if (url.pathname.startsWith('/api/')) {
     e.respondWith(
       fetch(e.request).catch(() =>
@@ -68,18 +68,35 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Fichiers statiques : Cache First, réseau en fallback
+  // Images : Cache First (changent rarement)
+  if (url.pathname.match(/\.(png|jpg|jpeg|svg|ico|webp)$/)) {
+    e.respondWith(
+      caches.match(e.request).then(cached => {
+        if (cached) return cached;
+        return fetch(e.request).then(response => {
+          if (response && response.status === 200) {
+            caches.open(CACHE_NAME).then(c => c.put(e.request, response.clone()));
+          }
+          return response;
+        }).catch(() => new Response('', { status: 404 }));
+      })
+    );
+    return;
+  }
+
+  // HTML + CSS + JS : Network First → cache en fallback hors ligne
+  // Garantit que les déploiements sont visibles immédiatement sans rien bumper
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(response => {
+    fetch(e.request)
+      .then(response => {
         if (response && response.status === 200 && e.request.method === 'GET') {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+          caches.open(CACHE_NAME).then(c => c.put(e.request, response.clone()));
         }
         return response;
-      }).catch(() => caches.match('/index.html'));
-    })
+      })
+      .catch(() =>
+        caches.match(e.request).then(cached => cached || caches.match('/index.html'))
+      )
   );
 });
 
