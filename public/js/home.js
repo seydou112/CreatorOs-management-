@@ -32,10 +32,11 @@ const blob1 = document.querySelector('.blob-1');
 const blob2 = document.querySelector('.blob-2');
 
 function applyParallax() {
-  if (isMobile()) return;
   const y = scrollY;
-  if (heroContent) heroContent.style.transform = `translateY(${y * 0.28}px)`;
-  if (heroVisual) heroVisual.style.transform = `translateY(${y * 0.14}px)`;
+  const mobile = isMobile();
+  const speed = mobile ? 0.12 : 0.28;
+  if (heroContent) heroContent.style.transform = `translateY(${y * speed}px)`;
+  if (!mobile && heroVisual) heroVisual.style.transform = `translateY(${y * 0.14}px)`;
   if (blob1) blob1.style.transform = `translateY(${y * 0.07}px)`;
   if (blob2) blob2.style.transform = `translateY(${y * -0.04}px)`;
 }
