@@ -9,7 +9,9 @@ import {
 const router = Router();
 
 function getClient() {
-  return new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const key = (process.env.GEMINI_API_KEY || '').trim();
+  if (!key) throw new Error('GEMINI_API_KEY non configurée.');
+  return new GoogleGenerativeAI(key);
 }
 
 function parseJson(text) {

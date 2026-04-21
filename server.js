@@ -55,6 +55,34 @@ app.use('/api/generate', generateRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/analyze', analyzeRouter);
 
+app.get('/api/status', async (req, res) => {
+  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+  const key = (process.env.GEMINI_API_KEY || '').trim();
+  const dbOk = !!(await import('./data/db.js').then(m => m.default));
+
+  const status = {
+    db: dbOk ? 'connectée' : 'non disponible (mode mémoire)',
+    gemini_key_present: !!key,
+    gemini_key_length: key.length,
+    gemini_key_prefix: key ? key.slice(0, 7) : 'ABSENTE'
+  };
+
+  if (!key) {
+    return res.json({ ...status, gemini_test: 'IGNORÉ — clé absente' });
+  }
+
+  try {
+    const client = new GoogleGenerativeAI(key);
+    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    await model.generateContent('Réponds uniquement: OK');
+    status.gemini_test = 'OK — clé valide';
+  } catch (err) {
+    status.gemini_test = `ERREUR — ${err.message}`;
+  }
+
+  res.json(status);
+});
+
 app.get('/api/widget/data', (req, res) => {
   const tips = [
     "Un hook percutant capte l'attention en moins de 2 secondes.",

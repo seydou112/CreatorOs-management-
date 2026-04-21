@@ -31,7 +31,7 @@ function parseJsonArray(text) {
 }
 
 async function generateBlogArticles() {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = (process.env.GEMINI_API_KEY || '').trim();
   if (!apiKey) throw new Error('GEMINI_API_KEY non configurée');
 
   const today = new Date().toISOString().split('T')[0];
