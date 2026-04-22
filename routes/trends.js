@@ -14,25 +14,32 @@ function getClient() {
   return new GoogleGenerativeAI(key);
 }
 
-function parseJson(text) {
-  let cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    const match = cleaned.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
-    throw new Error('Réponse IA invalide');
-  }
+function isQuotaError(err) {
+  return err?.message?.includes('429') || err?.message?.includes('quota') || err?.message?.includes('Too Many Requests');
 }
 
-function getTrendsModel() {
-  const client = getClient();
-  return client.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-    systemInstruction: SYSTEM_PROMPT_TRENDS,
-    generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
-    tools: [{ googleSearch: {} }]
-  });
+const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+
+async function getTrendsResult(prompt) {
+  let lastErr;
+  for (const model of MODELS) {
+    try {
+      const client = getClient();
+      const m = client.getGenerativeModel({
+        model,
+        systemInstruction: SYSTEM_PROMPT_TRENDS,
+        generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
+        tools: [{ googleSearch: {} }]
+      });
+      const result = await m.generateContent(prompt);
+      return parseJson(result.response.text());
+    } catch (err) {
+      lastErr = err;
+      if (isQuotaError(err)) { console.warn(`Quota dépassé sur ${model}, essai suivant...`); continue; }
+      throw err;
+    }
+  }
+  throw new Error('Quota API dépassé. Réessayez dans quelques minutes.');
 }
 
 // ===== TENDANCES EN TEMPS RÉEL =====
@@ -40,13 +47,8 @@ router.post('/search', async (req, res, next) => {
   try {
     const { sujet, plateforme = 'tiktok' } = req.body;
     if (!sujet?.trim()) return res.status(400).json({ error: 'Sujet requis.' });
-
-    const model = getTrendsModel();
     const prompt = buildTrendsPrompt({ sujet: sujet.trim(), plateforme });
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    const data = parseJson(text);
-
+    const data = await getTrendsResult(prompt);
     res.json(data);
   } catch (err) {
     next(err);
@@ -59,11 +61,8 @@ router.post('/competitor', async (req, res, next) => {
     const { concurrent, plateforme = 'tiktok' } = req.body;
     if (!concurrent?.trim()) return res.status(400).json({ error: 'Concurrent requis.' });
 
-    const model = getTrendsModel();
     const prompt = buildCompetitorPrompt({ concurrent: concurrent.trim(), plateforme });
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    const data = parseJson(text);
+    const data = await getTrendsResult(prompt);
 
     res.json(data);
   } catch (err) {
