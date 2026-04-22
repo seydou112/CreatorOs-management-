@@ -18,7 +18,7 @@ function isQuotaError(err) {
   return err?.message?.includes('429') || err?.message?.includes('quota') || err?.message?.includes('Too Many Requests');
 }
 
-const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
 
 async function getTrendsResult(prompt) {
   let lastErr;
@@ -39,7 +39,7 @@ async function getTrendsResult(prompt) {
       throw err;
     }
   }
-  throw new Error('Quota API dépassé. Réessayez dans quelques minutes.');
+  throw new Error('Quota journalier Gemini épuisé. Réessayez demain ou activez la facturation sur console.cloud.google.com.');
 }
 
 // ===== TENDANCES EN TEMPS RÉEL =====

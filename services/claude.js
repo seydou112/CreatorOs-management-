@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { SYSTEM_PROMPT_GENERATION } from '../utils/promptBuilder.js';
 import { SYSTEM_PROMPT_ANALYZE } from '../utils/analyzeBuilder.js';
 
-const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
 
 function getClient() {
   const key = (process.env.GEMINI_API_KEY || '').trim();
@@ -40,7 +40,7 @@ async function tryModels(fn) {
       throw err;
     }
   }
-  throw new Error('Quota API dépassé sur tous les modèles. Réessayez dans quelques minutes ou activez la facturation sur console.cloud.google.com.');
+  throw new Error('Quota journalier Gemini épuisé. Réessayez demain ou activez la facturation sur console.cloud.google.com (le premier million de tokens reste gratuit).');
 }
 
 export async function generateContent(userPrompt) {
