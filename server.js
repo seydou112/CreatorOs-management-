@@ -62,28 +62,29 @@ app.use('/api/blog', blogRouter);
 app.use('/api/analyze', analyzeRouter);
 
 app.get('/api/status', async (req, res) => {
-  const { GoogleGenerativeAI } = await import('@google/generative-ai');
-  const key = (process.env.GEMINI_API_KEY || '').trim();
+  const { default: OpenAI } = await import('openai');
+  const key = (process.env.OPENAI_API_KEY || '').trim();
   const dbOk = !!(await import('./data/db.js').then(m => m.default));
 
   const status = {
     db: dbOk ? 'connectée' : 'non disponible (mode mémoire)',
-    gemini_key_present: !!key,
-    gemini_key_length: key.length,
-    gemini_key_prefix: key ? key.slice(0, 7) : 'ABSENTE'
+    openai_key_present: !!key,
+    openai_key_length: key.length,
+    openai_key_prefix: key ? key.slice(0, 7) : 'ABSENTE'
   };
 
-  if (!key) {
-    return res.json({ ...status, gemini_test: 'IGNORÉ — clé absente' });
-  }
+  if (!key) return res.json({ ...status, openai_test: 'IGNORÉ — clé absente' });
 
   try {
-    const client = new GoogleGenerativeAI(key);
-    const model = client.getGenerativeModel({ model: 'gemini-2.0-flash' });
-    await model.generateContent('Réponds uniquement: OK');
-    status.gemini_test = 'OK — clé valide';
+    const client = new OpenAI({ apiKey: key });
+    await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: 'Réponds uniquement: OK' }],
+      max_tokens: 5
+    });
+    status.openai_test = 'OK — clé valide';
   } catch (err) {
-    status.gemini_test = `ERREUR — ${err.message}`;
+    status.openai_test = `ERREUR — ${err.message}`;
   }
 
   res.json(status);
@@ -119,10 +120,10 @@ app.use((err, req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Viral — serveur démarré sur le port ${PORT}`);
-  const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
-  if (!geminiKey) {
-    console.error('⛔ GEMINI_API_KEY manquante — la génération IA ne fonctionnera pas.');
+  const openaiKey = (process.env.OPENAI_API_KEY || '').trim();
+  if (!openaiKey) {
+    console.error('⛔ OPENAI_API_KEY manquante — la génération IA ne fonctionnera pas.');
   } else {
-    console.log(`✓ GEMINI_API_KEY chargée (longueur: ${geminiKey.length}, début: ${geminiKey.slice(0, 6)}...)`);
+    console.log(`✓ OPENAI_API_KEY chargée (longueur: ${openaiKey.length}, début: ${openaiKey.slice(0, 7)}...)`);
   }
 });

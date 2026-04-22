@@ -1,58 +1,35 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import { SYSTEM_PROMPT_GENERATION } from '../utils/promptBuilder.js';
 import { SYSTEM_PROMPT_ANALYZE } from '../utils/analyzeBuilder.js';
 
-const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
-
 function getClient() {
-  const key = (process.env.GEMINI_API_KEY || '').trim();
-  if (!key) throw new Error('GEMINI_API_KEY non configurée — ajoutez-la dans vos variables d\'environnement Render.');
-  return new GoogleGenerativeAI(key);
+  const key = (process.env.OPENAI_API_KEY || '').trim();
+  if (!key) throw new Error('OPENAI_API_KEY non configurée — ajoutez-la dans vos variables d\'environnement Render.');
+  return new OpenAI({ apiKey: key });
 }
 
 function parseJson(text) {
-  let cleaned = text.trim()
-    .replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
+  let cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  try { return JSON.parse(cleaned); } catch {
     const match = cleaned.match(/\{[\s\S]*\}/);
     if (match) return JSON.parse(match[0]);
     throw new Error('Réponse invalide du modèle IA');
   }
 }
 
-function isQuotaError(err) {
-  return err?.message?.includes('429') || err?.message?.includes('quota') || err?.message?.includes('Too Many Requests');
-}
-
-async function tryModels(fn) {
-  let lastErr;
-  for (const model of MODELS) {
-    try {
-      return await fn(getClient(), model);
-    } catch (err) {
-      lastErr = err;
-      if (isQuotaError(err)) {
-        console.warn(`Quota dépassé sur ${model}, essai du modèle suivant...`);
-        continue;
-      }
-      throw err;
-    }
-  }
-  throw new Error('Quota journalier Gemini épuisé. Réessayez demain ou activez la facturation sur console.cloud.google.com (le premier million de tokens reste gratuit).');
-}
-
 export async function generateContent(userPrompt) {
-  const parsed = await tryModels(async (client, model) => {
-    const m = client.getGenerativeModel({
-      model,
-      systemInstruction: SYSTEM_PROMPT_GENERATION,
-      generationConfig: { maxOutputTokens: 2048, temperature: 0.9 }
-    });
-    const result = await m.generateContent(userPrompt);
-    return parseJson(result.response.text());
+  const res = await getClient().chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT_GENERATION },
+      { role: 'user', content: userPrompt }
+    ],
+    max_tokens: 2048,
+    temperature: 0.9,
+    response_format: { type: 'json_object' }
   });
+
+  const parsed = parseJson(res.choices[0].message.content);
 
   if (!parsed.variations || !Array.isArray(parsed.variations) || parsed.variations.length === 0) {
     throw new Error('Structure de réponse incomplète');
@@ -64,15 +41,18 @@ export async function generateContent(userPrompt) {
 }
 
 export async function analyzeAccount(userPrompt) {
-  const parsed = await tryModels(async (client, model) => {
-    const m = client.getGenerativeModel({
-      model,
-      systemInstruction: SYSTEM_PROMPT_ANALYZE,
-      generationConfig: { maxOutputTokens: 1536, temperature: 0.7 }
-    });
-    const result = await m.generateContent(userPrompt);
-    return parseJson(result.response.text());
+  const res = await getClient().chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT_ANALYZE },
+      { role: 'user', content: userPrompt }
+    ],
+    max_tokens: 1536,
+    temperature: 0.7,
+    response_format: { type: 'json_object' }
   });
+
+  const parsed = parseJson(res.choices[0].message.content);
 
   const required = ['score_engagement', 'points_forts', 'points_faibles', 'recommandations', 'plan_action', 'type_contenu_optimal'];
   for (const key of required) {

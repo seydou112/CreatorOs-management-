@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import { blogPosts } from '../data/blogPosts.js';
 
 const router = Router();
 
-// 24h in-memory cache
 let blogCache = null;
 let blogCacheTime = 0;
 const CACHE_TTL = 24 * 60 * 60 * 1000;
@@ -17,6 +16,12 @@ const CATEGORY_IMAGES = {
 };
 
 const VALID_CATEGORIES = ['astuces', 'guides', 'nouveautes', 'tendances'];
+
+function getClient() {
+  const key = (process.env.OPENAI_API_KEY || '').trim();
+  if (!key) throw new Error('OPENAI_API_KEY non configurée');
+  return new OpenAI({ apiKey: key });
+}
 
 function parseJsonArray(text) {
   let cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
@@ -31,37 +36,38 @@ function parseJsonArray(text) {
 }
 
 async function generateBlogArticles() {
-  const apiKey = (process.env.GEMINI_API_KEY || '').trim();
-  if (!apiKey) throw new Error('GEMINI_API_KEY non configurée');
-
   const today = new Date().toISOString().split('T')[0];
-  const client = new GoogleGenerativeAI(apiKey);
-  const model = client.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-    generationConfig: { maxOutputTokens: 4096, temperature: 0.7 },
-    tools: [{ googleSearch: {} }]
-  });
 
-  const prompt = `Aujourd'hui nous sommes le ${today}.
+  const res = await getClient().chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [
+      {
+        role: 'system',
+        content: 'Tu es un expert en création de contenu pour les réseaux sociaux. Tu rédiges des articles de blog pratiques et actionnables en français. Tu réponds UNIQUEMENT avec du JSON valide, sans texte autour, sans markdown.'
+      },
+      {
+        role: 'user',
+        content: `Aujourd'hui nous sommes le ${today}.
 
-Génère 5 articles de blog en français sur la création de contenu pour les réseaux sociaux (TikTok, Instagram, Facebook, YouTube Shorts, Pinterest).
-Base-toi sur les dernières actualités réelles du moment : nouvelles fonctionnalités des plateformes, changements d'algorithmes, tendances virales actuelles, outils populaires.
-
-Réponds UNIQUEMENT avec un tableau JSON valide (pas de texte avant ou après). Chaque article doit avoir exactement ces champs :
-- slug : string (identifiant URL, minuscules, tirets, unique, ex: "algorithme-tiktok-avril-2026")
-- titre : string (titre accrocheur en français, 50-80 caractères)
+Génère 5 articles de blog en français sur la création de contenu pour les réseaux sociaux (TikTok, Instagram, Facebook, YouTube Shorts).
+Réponds UNIQUEMENT avec un tableau JSON. Chaque article doit avoir exactement ces champs :
+- slug : string (identifiant URL, ex: "algorithme-tiktok-${today}")
+- titre : string (titre accrocheur, 50-80 caractères)
 - categorie : exactement un de : "astuces", "guides", "nouveautes", "tendances"
 - date : "${today}"
 - tempsLecture : "X min" (entre 3 et 8 min)
-- extrait : string (2-3 phrases engageantes en français, 100-150 caractères)
-- tags : array de 3-4 strings (mots-clés courts, sans #, sans espaces de préférence)
-- contenu : string (article complet HTML — utiliser <h2>, <h3>, <p>, <ul>, <li>, <strong> — environ 400 mots, conseils pratiques et concrets basés sur des faits réels)
+- extrait : string (2-3 phrases engageantes, 100-150 caractères)
+- tags : array de 3-4 strings
+- contenu : string (article HTML complet avec <h2>, <h3>, <p>, <ul>, <li>, <strong> — environ 400 mots, conseils pratiques)
 
-Les articles doivent être diversifiés : au moins un par plateforme différente, contenus pratiques et actionnables immédiatement.`;
+Articles diversifiés : au moins une plateforme différente par article.`
+      }
+    ],
+    max_tokens: 4096,
+    temperature: 0.7
+  });
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
-  const raw = parseJsonArray(text);
+  const raw = parseJsonArray(res.choices[0].message.content);
 
   return raw.map((a, i) => ({
     id: Date.now() + i,
@@ -80,7 +86,6 @@ Les articles doivent être diversifiés : au moins un par plateforme différente
 async function getArticles() {
   const now = Date.now();
   if (blogCache && (now - blogCacheTime) < CACHE_TTL) return blogCache;
-
   try {
     const articles = await generateBlogArticles();
     blogCache = articles;
@@ -88,7 +93,6 @@ async function getArticles() {
     return articles;
   } catch {
     if (blogCache) return blogCache;
-    // Fallback sur les articles statiques
     return blogPosts;
   }
 }
@@ -98,13 +102,9 @@ router.get('/', async (req, res, next) => {
     const { categorie } = req.query;
     const all = await getArticles();
     let posts = all.map(({ contenu, ...rest }) => rest);
-    if (categorie && categorie !== 'tous') {
-      posts = posts.filter(p => p.categorie === categorie);
-    }
+    if (categorie && categorie !== 'tous') posts = posts.filter(p => p.categorie === categorie);
     res.json(posts);
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
 });
 
 router.get('/:slug', async (req, res, next) => {
@@ -113,9 +113,7 @@ router.get('/:slug', async (req, res, next) => {
     const post = all.find(p => p.slug === req.params.slug);
     if (!post) return res.status(404).json({ error: 'Article introuvable.' });
     res.json(post);
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
 });
 
 export default router;
