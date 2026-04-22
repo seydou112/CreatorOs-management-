@@ -1,59 +1,19 @@
 import pool from '../data/db.js';
 
-// Limite par IP pour les utilisateurs non connectés (en mémoire)
-const ipUsage = new Map();
-
-function getIpCount(ip) {
-  const today = new Date().toISOString().split('T')[0];
-  const key = `${ip}:${today}`;
-  const count = ipUsage.get(key) || 0;
-  return { key, count, today };
-}
-
-function incrementIp(key) {
-  const prev = ipUsage.get(key) || 0;
-  ipUsage.set(key, prev + 1);
-  // Nettoyage si trop grande
-  if (ipUsage.size > 5000) {
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    for (const [k] of ipUsage) {
-      if (k.endsWith(yesterday)) ipUsage.delete(k);
-    }
-  }
-}
-
 export async function rateLimit(req, res, next) {
   const limit = parseInt(process.env.FREE_DAILY_LIMIT || '3');
 
-  // ── Sans base de données : limite par IP en mémoire ──────────────────
+  // ── Sans base de données : accès libre (le frontend gère le comptage) ─
   if (!pool) {
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || 'unknown';
-    const { key, count } = getIpCount(ip);
-
-    if (count >= limit) {
-      return res.status(429).json({
-        error: 'Limite journalière atteinte. Passez en Premium pour des générations illimitées.',
-        remaining: 0
-      });
-    }
-    res.setHeader('X-Remaining-Generations', String(limit - count - 1));
-    req.commitUsage = async () => incrementIp(key);
+    res.setHeader('X-Remaining-Generations', String(limit));
+    req.commitUsage = async () => {};
     return next();
   }
 
-  // ── Utilisateur non connecté : limite par IP en mémoire ──────────────
+  // ── Utilisateur non connecté avec DB : accès libre ────────────────────
   if (!req.userId) {
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || 'unknown';
-    const { key, count } = getIpCount(ip);
-
-    if (count >= limit) {
-      return res.status(429).json({
-        error: 'Limite journalière atteinte. Passez en Premium pour des générations illimitées.',
-        remaining: 0
-      });
-    }
-    res.setHeader('X-Remaining-Generations', String(limit - count - 1));
-    req.commitUsage = async () => incrementIp(key);
+    res.setHeader('X-Remaining-Generations', String(limit));
+    req.commitUsage = async () => {};
     return next();
   }
 
@@ -66,7 +26,6 @@ export async function rateLimit(req, res, next) {
     );
     const user = result.rows[0];
 
-    // Utilisateur introuvable en DB → on le laisse passer librement
     if (!user) {
       res.setHeader('X-Remaining-Generations', String(limit));
       req.commitUsage = async () => {};
@@ -105,10 +64,10 @@ export async function rateLimit(req, res, next) {
     };
     next();
   } catch (err) {
-    // Erreur DB → on laisse passer plutôt que de bloquer l'utilisateur
     console.warn('rateLimit DB error:', err.message);
     res.setHeader('X-Remaining-Generations', String(limit));
     req.commitUsage = async () => {};
     next();
   }
 }
+
