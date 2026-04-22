@@ -13,7 +13,11 @@ const USAGE_KEY = 'viral_usage';
 function getTodayKey() { return new Date().toISOString().split('T')[0]; }
 function loadUsage() {
   const stored = JSON.parse(localStorage.getItem(USAGE_KEY) || '{}');
-  if (stored.date === getTodayKey()) return stored.remaining ?? FREE_LIMIT;
+  if (stored.date === getTodayKey()) {
+    const r = stored.remaining ?? FREE_LIMIT;
+    // Si le serveur n'a pas de DB il autorise toujours — on repart du max
+    return r > 0 ? r : FREE_LIMIT;
+  }
   return FREE_LIMIT;
 }
 function saveUsage(remaining) {
@@ -125,10 +129,6 @@ async function callGenerateAPI(body) {
       body: JSON.stringify(body),
       signal: controller.signal
     });
-
-    if (res.status === 401) {
-      throw new Error('Connexion requise.');
-    }
 
     const remaining = res.headers.get('X-Remaining-Generations');
     if (remaining !== null) updateUsageDisplay(remaining);
