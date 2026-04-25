@@ -1,5 +1,10 @@
 import pg from 'pg';
+import dns from 'dns';
+
 const { Pool } = pg;
+
+// Préférer IPv4 pour la résolution DNS (évite les erreurs ENETUNREACH IPv6)
+dns.setDefaultResultOrder('ipv4first');
 
 let pool = null;
 
@@ -7,7 +12,7 @@ if (process.env.DATABASE_URL) {
   const candidate = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
-    connectionTimeoutMillis: 5000,
+    connectionTimeoutMillis: 8000,
     idleTimeoutMillis: 10000,
     max: 5
   });
@@ -36,8 +41,13 @@ if (process.env.DATABASE_URL) {
 
     console.log('✓ Base de données connectée');
   } catch (err) {
-    console.warn('⚠ DB non disponible — mode sans base de données activé:', err.message);
-    await candidate.end().catch(() => {});
+    const isIPv6Error = err.message?.includes('ENETUNREACH') || err.message?.includes('IPv6');
+    if (isIPv6Error) {
+      console.error('⛔ Erreur IPv6 DB — utilisez l\'URL Externe (External Database URL) depuis le dashboard Render → votre base PostgreSQL → Connections → External Database URL');
+    } else {
+      console.warn('⚠ DB non disponible — mode sans base de données activé:', err.message);
+    }
+    candidate.end().catch(() => {});
     pool = null;
   }
 }
